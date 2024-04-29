@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <vector>
 
-void GraphicsPipelineTemp::draw(const VkCommandBuffer& commandBuffer, VkExtent2D swapChainExtent)
+void GraphicsPipelineTemp::draw(const VkCommandBuffer& commandBuffer, VkExtent2D swapChainExtent, float lineWidth)
 {
 	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline);
 
@@ -21,6 +21,8 @@ void GraphicsPipelineTemp::draw(const VkCommandBuffer& commandBuffer, VkExtent2D
 	scissor.extent = swapChainExtent;
 	vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
+	vkCmdSetLineWidth(commandBuffer, lineWidth);
+
 	for (Mesh2D* mesh : m_Mesh)
 	{
 		mesh->draw(commandBuffer);
@@ -32,7 +34,7 @@ void GraphicsPipelineTemp::initialize(const VkDevice& device)
 	m_VkDevice = device;
 }
 
-void GraphicsPipelineTemp::createGraphicsPipeline(const VkRenderPass& renderPass, DAEShader2D& shader)
+void GraphicsPipelineTemp::createGraphicsPipeline(const VkRenderPass& renderPass, DAEShader2D& shader, float *lineWidth)
 {
 	VkPipelineViewportStateCreateInfo viewportState{};
 	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -44,7 +46,7 @@ void GraphicsPipelineTemp::createGraphicsPipeline(const VkRenderPass& renderPass
 	rasterizer.depthClampEnable = VK_FALSE;
 	rasterizer.rasterizerDiscardEnable = VK_FALSE;
 	rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
-	rasterizer.lineWidth = 1.0f;
+	rasterizer.lineWidth = *lineWidth;
 	rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
 	rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
 	rasterizer.depthBiasEnable = VK_FALSE;
@@ -71,7 +73,8 @@ void GraphicsPipelineTemp::createGraphicsPipeline(const VkRenderPass& renderPass
 
 	std::vector<VkDynamicState> dynamicStates = {
 		VK_DYNAMIC_STATE_VIEWPORT,
-		VK_DYNAMIC_STATE_SCISSOR
+		VK_DYNAMIC_STATE_SCISSOR,
+		VK_DYNAMIC_STATE_LINE_WIDTH
 	};
 	VkPipelineDynamicStateCreateInfo dynamicState{};
 	dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;

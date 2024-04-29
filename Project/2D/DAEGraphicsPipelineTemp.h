@@ -12,13 +12,13 @@ public:
 	GraphicsPipelineTemp() {}
 	~GraphicsPipelineTemp() = default;
 
-	void createGraphicsPipeline(const VkRenderPass& renderPass, DAEShader2D& shader);
+	void createGraphicsPipeline(const VkRenderPass& renderPass, DAEShader2D& shader, float *lineWidth);
 
 	VkPipeline getVkGraphicsPipeline() const {
 		return m_GraphicsPipeline;
 	}
 
-	void draw(const VkCommandBuffer& commandBuffer, VkExtent2D swapChainExtent);
+	void draw(const VkCommandBuffer& commandBuffer, VkExtent2D swapChainExtent, float lineWidth);
 
 	void addMesh(Mesh2D& mesh) { m_Mesh.emplace_back(&mesh); }
 

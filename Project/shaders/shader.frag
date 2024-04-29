@@ -8,7 +8,7 @@ layout(location = 0) out vec4 outColor;
 
 layout(binding = 1) uniform sampler2D texSampler;
 
-const vec3 lightColor = vec3(1.0, 0.0, 0.0); // Warm yellow light
+const vec3 lightColor = vec3(1.0, 1.0, 1.0); // Warm yellow light
 
 void main() {
     const vec3 lightDirection = normalize(vec3(0.0, -1.0, -1.0));

@@ -61,9 +61,22 @@ void VulkanBase::createLogicalDevice() {
 
 	VkPhysicalDeviceFeatures deviceFeatures{};
 	deviceFeatures.samplerAnisotropy = VK_TRUE;
+	vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
+
 
 	VkDeviceCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+	if (deviceFeatures.wideLines) {
+		// 3. If supported, enable it when creating the device
+		VkPhysicalDeviceFeatures enabledFeatures = {};
+		enabledFeatures.wideLines = VK_TRUE;
+
+		createInfo.pEnabledFeatures = &enabledFeatures;
+	}
+	else {
+		// Handle case where wideLines feature is not supported
+		throw std::runtime_error("Wide lines feature is not supported on this device!");
+	}
 
 	createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
 	createInfo.pQueueCreateInfos = queueCreateInfos.data();

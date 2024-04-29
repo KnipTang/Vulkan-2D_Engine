@@ -1,0 +1,4 @@
+C:/Users/ZwoeleMan/Desktop/Dae/SECOND_YEAR_OMG/Sem_2/Graphics Programming 2/GraphicsProgramming2/Project/out/build/x64-Debug/CMakeFiles/Shaders.dir
+C:/Users/ZwoeleMan/Desktop/Dae/SECOND_YEAR_OMG/Sem_2/Graphics Programming 2/GraphicsProgramming2/Project/out/build/x64-Debug/CMakeFiles/Project.dir
+C:/Users/ZwoeleMan/Desktop/Dae/SECOND_YEAR_OMG/Sem_2/Graphics Programming 2/GraphicsProgramming2/Project/out/build/x64-Debug/CMakeFiles/edit_cache.dir
+C:/Users/ZwoeleMan/Desktop/Dae/SECOND_YEAR_OMG/Sem_2/Graphics Programming 2/GraphicsProgramming2/Project/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir

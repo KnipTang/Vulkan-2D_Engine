@@ -11,13 +11,18 @@ public:
 
 	void DrawScene(VkCommandBuffer commandBuffer, const std::vector<uint16_t> indices);
 
-	static std::vector<Vertex2D> generateRectangle(float top, float left, float bottom, float right);
+	static std::vector<Vertex2D> generateRectangle(float left, float bottom, float width, float height, glm::vec3 color = {1,1,1});
 	static std::vector<uint16_t> generateIndicesForRectangle();
 
-	static std::vector<Vertex2D> generateOval(float x, float y, float radius, int numSegments);
-	static std::vector<uint16_t> generateIndicesForOval(int numSegments);
+	static VerInd generateOval(float x, float y, float radius, int numSegments, glm::vec3 color = { 1,1,1 });
 
-	//static std::vector<Vertex3D> generateRoundedRectangle(float top, float left, float bottom, float right, float radius, int numSegments);
-	//static std::vector<uint16_t> generateIndicesForRoundedRectangle(int numSegments);
+	static VerInd generateRoundedRectangle(float left, float bottom, float width, float height, float radius, int numSegments, glm::vec3 color = { 1,1,1 });
+
+	static VerInd generateArc(float x, float y, float radius, int numSegments, float arcAngleInDegrees, glm::vec3 color = { 1,1,1 });
+
+	static VerInd generateSpiral(float x, float y, float majorRadius, float minorRadius, int numMajorSegments, int numMinorSegments, glm::vec3 color = { 1,1,1 });
+
+	static VerInd generateDonut(float x, float y, float outerRadius, float innerRadius, int numSegments, glm::vec3 color = { 1,1,1 });
+
 private:
 };

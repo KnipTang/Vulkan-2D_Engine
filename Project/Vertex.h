@@ -60,6 +60,12 @@ struct Vertex2D {
 	}
 };
 
+struct VerInd
+{
+	std::vector<Vertex2D> vertices;
+	std::vector<uint16_t> indices;
+};
+
 struct Vertex3D {
 	glm::vec3 pos;
 	glm::vec3 color;

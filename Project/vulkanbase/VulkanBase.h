@@ -77,14 +77,14 @@ private:
 		m_SwapChain.createSwapChain(device, physicalDevice, surface, window, m_Device);
 		m_SwapChain.createImageViews(device);
 		
-		m_RenderPass2D.initialize(device);
-		m_RenderPass2D.createRenderPass(m_SwapChain.getVkSwapChainImageFormat());
+		//m_RenderPass2D.initialize(device);
+		//m_RenderPass2D.createRenderPass(m_SwapChain.getVkSwapChainImageFormat());
 		
 		// week 03
-		m_RenderPass.initialize(device);
 		m_Depth.initialize(physicalDevice);
+		m_RenderPass.initialize(device);
 		m_RenderPass.createRenderPass(m_SwapChain.getVkSwapChainImageFormat(), m_Depth);
-		m_Shader3D.initialize(device);
+		//m_Shader3D.initialize(device);
 		m_Shader2D.initialize(device);
 		// week 02
 		m_CommandPool.initialize(device, m_Device.findQueueFamilies(physicalDevice, surface));
@@ -95,29 +95,38 @@ private:
 		m_Texture.createTextureImage(m_Buffer);
 		m_Texture.createTextureImageView();
 		m_Texture.createTextureSampler(physicalDevice);
-		m_Mesh3D.loadModel();
-		m_Mesh3D.createVertexBuffer(graphicsQueue,m_Buffer, m_CommandPool.getVkCommandPool());
-		m_Mesh3D.createIndexBuffer(graphicsQueue, m_Buffer, m_CommandPool.getVkCommandPool());
-		m_Mesh3D2.loadModel();
-		m_Mesh3D2.createVertexBuffer(graphicsQueue, m_Buffer, m_CommandPool.getVkCommandPool());
-		m_Mesh3D2.createIndexBuffer(graphicsQueue, m_Buffer, m_CommandPool.getVkCommandPool());
-		m_Mesh2D.createVertexBuffer(m_Vertices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
-		m_Mesh2D.createIndexBuffer(m_Indices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
-		m_Mesh2D2.createVertexBuffer(m_Vertices2, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
-		m_Mesh2D2.createIndexBuffer(m_Indices2, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
-		
+		//m_Mesh3D.loadModel();
+		//m_Mesh3D.createVertexBuffer(graphicsQueue,m_Buffer, m_CommandPool.getVkCommandPool());
+		//m_Mesh3D.createIndexBuffer(graphicsQueue, m_Buffer, m_CommandPool.getVkCommandPool());
+		//m_Mesh3D2.loadModel();
+		//m_Mesh3D2.createVertexBuffer(graphicsQueue, m_Buffer, m_CommandPool.getVkCommandPool());
+		//m_Mesh3D2.createIndexBuffer(graphicsQueue, m_Buffer, m_CommandPool.getVkCommandPool());
+		m_Mesh2D.createVertexBuffer(m_TorusVerInd.vertices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
+		m_Mesh2D.createIndexBuffer(m_TorusVerInd.indices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
+		m_Mesh2D2.createVertexBuffer(m_RoundedRectVerInd.vertices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
+		m_Mesh2D2.createIndexBuffer(m_RoundedRectVerInd.indices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
+		m_Mesh2D3.createVertexBuffer(m_OvalVerInd.vertices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
+		m_Mesh2D3.createIndexBuffer(m_OvalVerInd.indices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
+		m_Mesh2D4.createVertexBuffer(m_Vertices2, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
+		m_Mesh2D4.createIndexBuffer(m_Indices2, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
+		m_Mesh2D5.createVertexBuffer(m_ArcVerInd.vertices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
+		m_Mesh2D5.createIndexBuffer(m_ArcVerInd.indices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
+
 		m_Buffer.createUniformBuffers();
-		VulkanContext& m_Context = VulkanContext{ device, physicalDevice, m_RenderPass.getVkRenderPass(), m_SwapChain.getVkSwapChainExtent() };
-		m_GraphicsPipeline3D.initialize(m_Context, m_Buffer, m_Texture );
-		m_GraphicsPipeline3D.createGraphicsPipeline(m_RenderPass.getVkRenderPass(), m_Shader3D);
-		m_GraphicsPipeline3D.addMesh(m_Mesh3D);
-		m_GraphicsPipeline3D.addMesh(m_Mesh3D2);
+		//VulkanContext& m_Context = VulkanContext{ device, physicalDevice, m_RenderPass.getVkRenderPass(), m_SwapChain.getVkSwapChainExtent() };
+		//m_GraphicsPipeline3D.initialize(m_Context, m_Buffer, m_Texture );
+		//m_GraphicsPipeline3D.createGraphicsPipeline(m_RenderPass.getVkRenderPass(), m_Shader3D);
+		//m_GraphicsPipeline3D.addMesh(m_Mesh3D);
+		//m_GraphicsPipeline3D.addMesh(m_Mesh3D2);
 		
 		m_GraphicsPipelineTemp.initialize(device);
-		m_GraphicsPipelineTemp.createGraphicsPipeline(m_RenderPass.getVkRenderPass(), m_Shader2D);
+		m_GraphicsPipelineTemp.createGraphicsPipeline(m_RenderPass.getVkRenderPass(), m_Shader2D, &m_LineWidth);
 		m_GraphicsPipelineTemp.addMesh(m_Mesh2D);
 		m_GraphicsPipelineTemp.addMesh(m_Mesh2D2);
-		
+		m_GraphicsPipelineTemp.addMesh(m_Mesh2D3);
+		m_GraphicsPipelineTemp.addMesh(m_Mesh2D4);
+		m_GraphicsPipelineTemp.addMesh(m_Mesh2D5);
+
 		m_CommandBuffer = m_CommandPool.createCommandBuffer();
 
 		// week 06
@@ -137,11 +146,13 @@ private:
 	void cleanup() {
 		//cleanupSwapChain();
 
-		m_Mesh3D.destory();
-		m_Mesh3D2.destory();
+		//m_Mesh3D.destory();
+		//m_Mesh3D2.destory();
 		m_Mesh2D.destory();
 		m_Mesh2D2.destory();
-		
+		m_Mesh2D3.destory();
+		m_Mesh2D4.destory();
+		m_Mesh2D5.destory();
 
 		m_Buffer.destroy();
 
@@ -154,11 +165,11 @@ private:
 			vkDestroyFramebuffer(device, framebuffer, nullptr);
 		}
 
-		m_GraphicsPipeline3D.destroy();
+		//m_GraphicsPipeline3D.destroy();
 		m_GraphicsPipelineTemp.destroy();
 
 		m_RenderPass.destroy();
-		m_RenderPass2D.destroy();
+		//m_RenderPass2D.destroy();
 
 		m_CommandPool.destroy();
 		
@@ -213,10 +224,10 @@ private:
 	// These 5 functions should be refactored into a separate C++ class
 	// with the correct internal state.
 
-	DAEShader3D m_Shader3D{ 
-		"shaders/shader.vert.spv", 
-		"shaders/shader.frag.spv" 
-	};
+	//DAEShader3D m_Shader3D{ 
+	//	"shaders/shader.vert.spv", 
+	//	"shaders/shader.frag.spv" 
+	//};
 
 	DAEShader2D m_Shader2D{
 		"shaders/shader2D.vert.spv",
@@ -244,26 +255,37 @@ private:
 
 	std::vector<VkFramebuffer> swapChainFramebuffers;
 
-	GraphicsPipeline3D m_GraphicsPipeline3D{};
+	//GraphicsPipeline3D m_GraphicsPipeline3D{};
 	RenderPass m_RenderPass{};
-	RenderPass2D m_RenderPass2D{};
+	//RenderPass2D m_RenderPass2D{};
 	GraphicsPipelineTemp m_GraphicsPipelineTemp{};
 
 	void createFrameBuffers();
 
-	const std::vector<Vertex2D> m_Vertices2 = Scene::generateRectangle(-0.9f, -0.9f, -0.5f, -0.5f);
+	const std::vector<Vertex2D> m_Vertices2 = Scene::generateRectangle(-0.9f, -0.9f, 0.5f,0.5f);
 	const std::vector<uint16_t> m_Indices2 = Scene::generateIndicesForRectangle();
 
-	const std::vector<Vertex2D> m_Vertices = Scene::generateOval(0.70f, -0.70f, 0.25f, 36);
-	const std::vector<uint16_t> m_Indices = Scene::generateIndicesForOval(36);
+	const VerInd m_OvalVerInd = Scene::generateOval(0.70f, 0.70f, 0.25f, 16);
+	const VerInd m_ArcVerInd = Scene::generateArc(0.70f, -0.70f, 0.25f, 16, 300.f);
+	const VerInd m_TorusVerInd = Scene::generateDonut(0.70f, 0.f, 0.25f, 0.15f, 16);
+	//const std::vector<uint16_t> m_Indices = Scene::generateIndicesForOval(16);
+
+	//const std::vector<Vertex2D> m_Vertices3 = Scene::generateRoundTest(-0.9f,-0.9f,0.5f,0.5f,50);
+	//const std::vector<uint16_t> m_Indices3 = Scene::generateIndicesRoundTest();
+
+	const VerInd m_RoundedRectVerInd = Scene::generateRoundedRectangle(-0.3f, 0.0f, 0.1f, 0.1f, 0.25f, 15);
+	//const std::vector<uint16_t> m_Indices3 = Scene::generateIndicesForRoundedRectangle(36);
 
 	// Week 04
 	// Swap chain and image view support
-	Mesh3D m_Mesh3D{ device,  graphicsQueue, m_CommandPool.getVkCommandPool(), "models/viking_room.obj"};
-	Mesh3D m_Mesh3D2{ device,  graphicsQueue, m_CommandPool.getVkCommandPool(), "models/viking_room4.obj"};
+	//Mesh3D m_Mesh3D{ device,  graphicsQueue, m_CommandPool.getVkCommandPool(), "models/viking_room.obj"};
+	//Mesh3D m_Mesh3D2{ device,  graphicsQueue, m_CommandPool.getVkCommandPool(), "models/viking_room4.obj"};
 	//2D
 	Mesh2D m_Mesh2D{ device, graphicsQueue, m_CommandPool.getVkCommandPool() };
 	Mesh2D m_Mesh2D2{ device, graphicsQueue, m_CommandPool.getVkCommandPool() };
+	Mesh2D m_Mesh2D3{ device, graphicsQueue, m_CommandPool.getVkCommandPool() };
+	Mesh2D m_Mesh2D4{ device, graphicsQueue, m_CommandPool.getVkCommandPool() };
+	Mesh2D m_Mesh2D5{ device, graphicsQueue, m_CommandPool.getVkCommandPool() };
 
 	SwapChain m_SwapChain{};
 
@@ -303,6 +325,8 @@ private:
 	float m_Radius = 1;
 
 	float elapseTime;
+
+	float m_LineWidth = 5.f;
 
 	void keyEvent(int key, int scancode, int action, int mods);
 	void mouseMove(GLFWwindow* window, double xpos, double ypos);

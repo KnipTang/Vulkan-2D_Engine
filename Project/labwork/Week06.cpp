@@ -72,14 +72,14 @@ void VulkanBase::drawFrame() {
 	//m_GraphicsPipeline2D.setUBO(vp2D, 0);
 	//m_GraphicsPipeline2D.DrawFrame(m_CommandBuffer.getVkCommandBuffer(), m_SwapChain.getVkSwapChainExtent());
 
-	m_GraphicsPipelineTemp.draw(m_CommandBuffer.getVkCommandBuffer(), m_SwapChain.getVkSwapChainExtent());
+	m_GraphicsPipelineTemp.draw(m_CommandBuffer.getVkCommandBuffer(), m_SwapChain.getVkSwapChainExtent(), m_LineWidth);
 
 	ViewProjection vp3D{};
 	
 	vp3D = m_Camera.GetProjectionViewMatrix();
 
-	m_GraphicsPipeline3D.setUBO(vp3D, 0);
-	m_GraphicsPipeline3D.DrawFrame(m_CommandBuffer.getVkCommandBuffer(), m_SwapChain.getVkSwapChainExtent());
+	//m_GraphicsPipeline3D.setUBO(vp3D, 0);
+	//m_GraphicsPipeline3D.DrawFrame(m_CommandBuffer.getVkCommandBuffer(), m_SwapChain.getVkSwapChainExtent());
 
 	//ViewProjection vp{};
 	//
