@@ -1,16 +1,16 @@
-#include "DAEShader2D.h"
+#include "DAEShader2DFill.h"
 #include <vulkanbase/VulkanUtil.h>
 #include <vulkanbase/VulkanBase.h>
 
 #define MAX_FRAMES_IN_FLIGHT 3
 
-void DAEShader2D::initialize(const VkDevice& vkDevice)
+void DAEShader2DFill::initialize(const VkDevice& vkDevice)
 {
 	m_ShaderStages.push_back(createVertexShaderInfo(vkDevice));
 	m_ShaderStages.push_back(createFragmentShaderInfo(vkDevice));
 }
 
-void DAEShader2D::DestroyShaderModules(const VkDevice& vkDevice)
+void DAEShader2DFill::DestroyShaderModules(const VkDevice& vkDevice)
 {
 	for (VkPipelineShaderStageCreateInfo& stageInfo : m_ShaderStages)
 	{
@@ -19,7 +19,7 @@ void DAEShader2D::DestroyShaderModules(const VkDevice& vkDevice)
 	m_ShaderStages.clear();
 }
 
-VkPipelineShaderStageCreateInfo DAEShader2D::createFragmentShaderInfo(const VkDevice& vkDevice) {
+VkPipelineShaderStageCreateInfo DAEShader2DFill::createFragmentShaderInfo(const VkDevice& vkDevice) {
 	std::vector<char> fragShaderCode = readFile(m_FragmentShaderFile);
 	VkShaderModule fragShaderModule = createShaderModule(vkDevice, fragShaderCode);
 
@@ -32,7 +32,7 @@ VkPipelineShaderStageCreateInfo DAEShader2D::createFragmentShaderInfo(const VkDe
 	return fragShaderStageInfo;
 }
 
-VkPipelineShaderStageCreateInfo DAEShader2D::createVertexShaderInfo(const VkDevice& vkDevice) {
+VkPipelineShaderStageCreateInfo DAEShader2DFill::createVertexShaderInfo(const VkDevice& vkDevice) {
 	std::vector<char> vertShaderCode = readFile(m_VertexShaderFile);
 	VkShaderModule vertShaderModule = createShaderModule(vkDevice, vertShaderCode);
 
@@ -44,7 +44,7 @@ VkPipelineShaderStageCreateInfo DAEShader2D::createVertexShaderInfo(const VkDevi
 	return vertShaderStageInfo;
 }
 
-VkPipelineVertexInputStateCreateInfo DAEShader2D::createVertexInputStateInfo()
+VkPipelineVertexInputStateCreateInfo DAEShader2DFill::createVertexInputStateInfo()
 {
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -60,16 +60,7 @@ VkPipelineVertexInputStateCreateInfo DAEShader2D::createVertexInputStateInfo()
 	return vertexInputInfo;
 }
 
-VkPipelineInputAssemblyStateCreateInfo DAEShader2D::createInputAssemblyStateInfo()
-{
-	VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
-	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-	inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
-	inputAssembly.primitiveRestartEnable = VK_FALSE;
-	return inputAssembly;
-}
-
-VkPipelineInputAssemblyStateCreateInfo DAEShader2D::createFillInputAssemblyStateInfo()
+VkPipelineInputAssemblyStateCreateInfo DAEShader2DFill::createInputAssemblyStateInfo()
 {
 	VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -78,7 +69,16 @@ VkPipelineInputAssemblyStateCreateInfo DAEShader2D::createFillInputAssemblyState
 	return inputAssembly;
 }
 
-VkShaderModule DAEShader2D::createShaderModule(const VkDevice& vkDevice, const std::vector<char>& code) {
+VkPipelineInputAssemblyStateCreateInfo DAEShader2DFill::createFillInputAssemblyStateInfo()
+{
+	VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
+	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+	inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+	inputAssembly.primitiveRestartEnable = VK_FALSE;
+	return inputAssembly;
+}
+
+VkShaderModule DAEShader2DFill::createShaderModule(const VkDevice& vkDevice, const std::vector<char>& code) {
 	VkShaderModuleCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 	createInfo.codeSize = code.size();

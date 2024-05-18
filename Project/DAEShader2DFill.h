@@ -6,16 +6,16 @@
 #include <vulkan/vulkan_core.h>
 #include <GLFW/glfw3.h>
 
-class DAEShader2D {
+class DAEShader2DFill {
 private:
     GLFWwindow* window;
 
 public:
-    DAEShader2D(const std::string& vertexShaderFile, const std::string& fragmentShaderFile)
+    DAEShader2DFill(const std::string& vertexShaderFile, const std::string& fragmentShaderFile)
         : m_VertexShaderFile{ vertexShaderFile }, m_FragmentShaderFile{ fragmentShaderFile }
     {
     };
-    ~DAEShader2D() = default;
+    ~DAEShader2DFill() = default;
     std::vector<VkPipelineShaderStageCreateInfo>& GetShaderStages() { return m_ShaderStages; };
     void initialize(const VkDevice& vkDevice);
     void DestroyShaderModules(const VkDevice& vkDevice);
@@ -37,8 +37,8 @@ private:
     VkVertexInputBindingDescription m_VertexInputBindingDescription;
     std::vector<VkVertexInputAttributeDescription> m_VertexInputAttributeDescriptors;
 
-    DAEShader2D(const DAEShader2D&) = delete;
-    DAEShader2D& operator=(const DAEShader2D&) = delete;
-    DAEShader2D(const DAEShader2D&&) = delete;
-    DAEShader2D& operator=(const DAEShader2D&&) = delete;
+    DAEShader2DFill(const DAEShader2DFill&) = delete;
+    DAEShader2DFill& operator=(const DAEShader2DFill&) = delete;
+    DAEShader2DFill(const DAEShader2DFill&&) = delete;
+    DAEShader2DFill& operator=(const DAEShader2DFill&&) = delete;
 };

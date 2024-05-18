@@ -9,18 +9,19 @@ void Scene::DrawScene(VkCommandBuffer commandBuffer, const std::vector<uint16_t>
 	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 }
 
-std::vector<Vertex2D> Scene::generateRectangle(float left, float bottom, float width, float height, glm::vec3 color) {
+VerInd Scene::generateRectangle(float left, float bottom, float width, float height, glm::vec3 color) {
     std::vector<Vertex2D> vertices;
     vertices.push_back({ {left, bottom}, color });
     vertices.push_back({ {left + width, bottom},color });
     vertices.push_back({ {left + width, bottom + height}, color });
     vertices.push_back({ {left, bottom + height}, color });
-    return vertices;
+
+	std::vector<uint16_t> indices;
+	indices = { 0, 1, 1, 2, 2 , 3, 3, 0 };
+
+    return VerInd{ vertices, indices };
 }
 
-std::vector<uint16_t> Scene::generateIndicesForRectangle() {
-    return { 0, 1, 1, 2, 2 , 3, 3, 0};
-}
 /*
 std::vector<Vertex2D> Scene::generateRoundTest(float left, float bottom, float width, float height, float cornerRadius) {
 	std::vector<Vertex2D> vertices;
