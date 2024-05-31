@@ -9,6 +9,18 @@ void Scene::DrawScene(VkCommandBuffer commandBuffer, const std::vector<uint16_t>
 	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 }
 
+VerInd Scene::generateLine(float posX1, float posY1, float posX2, float posY2, glm::vec3 color)
+{
+	std::vector<Vertex2D> vertices;
+	vertices.push_back({ {posX1, posY1}, color });
+	vertices.push_back({ {posX2, posY2},color });
+
+	std::vector<uint16_t> indices;
+	indices = { 0, 1};
+
+	return VerInd{ vertices, indices };
+}
+
 VerInd Scene::generateRectangle(float left, float bottom, float width, float height, glm::vec3 color) {
     std::vector<Vertex2D> vertices;
     vertices.push_back({ {left, bottom}, color });
@@ -184,188 +196,6 @@ VerInd Scene::generateRoundedRectangle(float left, float bottom, float width, fl
 
 	indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 1));
 	indices.push_back(static_cast<uint16_t>(1));
-	/*
-	*/
-	/*
-	//middle rect
-	vertices[0].pos = glm::vec2{ pos.x, pos.y + 3 * radius };
-	vertices[1].pos = glm::vec2{ pos.x + radius, pos.y + 3 * radius };
-	vertices[2].pos = glm::vec2{ pos.x + radius, pos.y + 4 * radius };
-	vertices[3].pos = glm::vec2{ pos.x, pos.y + 4 * radius };
-
-	finalVertexes.push_back({ vertices[0].pos, vertices[0].color });
-	finalVertexes.push_back({ vertices[1].pos, vertices[1].color });
-	finalVertexes.push_back({ vertices[2].pos, vertices[2].color });
-	finalVertexes.push_back({ vertices[3].pos, vertices[3].color });
-
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4 + 1));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4 + 2));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4 + 2));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4 + 3));
-
-
-	// right rect
-	vertices[0].pos = glm::vec2{ pos.x + radius, pos.y + 3 * radius };
-	vertices[1].pos = glm::vec2{ pos.x + 2 * radius, pos.y + 3 * radius };
-	vertices[2].pos = glm::vec2{ pos.x + 2 * radius, pos.y + 4 * radius };
-	vertices[3].pos = glm::vec2{ pos.x + radius, pos.y + 4 * radius };
-
-	finalVertexes.push_back({ vertices[0].pos, vertices[0].color });
-	finalVertexes.push_back({ vertices[1].pos, vertices[1].color });
-	finalVertexes.push_back({ vertices[2].pos, vertices[2].color });
-	finalVertexes.push_back({ vertices[3].pos, vertices[3].color });
-
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4 + 1));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4 + 2));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4 + 2));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4 + 3));
-
-	
-
-	//left Rect
-	vertices[0].pos = glm::vec2{ pos.x - radius, pos.y + 3 * radius };
-	vertices[1].pos = glm::vec2{ pos.x, pos.y + 3 * radius };
-	vertices[2].pos = glm::vec2{ pos.x, pos.y + 4 * radius };
-	vertices[3].pos = glm::vec2{ pos.x - radius, pos.y + 4 * radius };
-
-	finalVertexes.push_back({ vertices[0].pos, vertices[0].color });
-	finalVertexes.push_back({ vertices[1].pos, vertices[1].color });
-	finalVertexes.push_back({ vertices[2].pos, vertices[2].color });
-	finalVertexes.push_back({ vertices[3].pos, vertices[3].color });
-
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4 + 1));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4 + 2));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4 + 2));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4 + 3));
-
-	
-
-	//Bottom Rect
-	vertices[0].pos = glm::vec2{ pos.x, pos.y + 4 * radius };
-	vertices[1].pos = glm::vec2{ pos.x + radius, pos.y + 4 * radius };
-	vertices[2].pos = glm::vec2{ pos.x + radius, pos.y + 5 * radius };
-	vertices[3].pos = glm::vec2{ pos.x, pos.y + 5 * radius };
-
-	finalVertexes.push_back({ vertices[0].pos, vertices[0].color });
-	finalVertexes.push_back({ vertices[1].pos, vertices[1].color });
-	finalVertexes.push_back({ vertices[2].pos, vertices[2].color });
-	finalVertexes.push_back({ vertices[3].pos, vertices[3].color });
-
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4 + 2));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4 + 1));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4 + 2));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4 + 3));
-
-	//Top Rect
-	vertices[0].pos = glm::vec2{ pos.x, pos.y + 2 * radius };
-	vertices[1].pos = glm::vec2{ pos.x + radius, pos.y + 2 * radius };
-	vertices[2].pos = glm::vec2{ pos.x + radius, pos.y + 3 * radius };
-	vertices[3].pos = glm::vec2{ pos.x, pos.y + 3 * radius };
-
-	finalVertexes.push_back({ vertices[0].pos, vertices[0].color });
-	finalVertexes.push_back({ vertices[1].pos, vertices[1].color });
-	finalVertexes.push_back({ vertices[2].pos, vertices[2].color });
-	finalVertexes.push_back({ vertices[3].pos, vertices[3].color });
-
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4 + 2));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4 + 1));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4 + 2));
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 4 + 3));
-	std::vector<Vertex2D> vertices;
-	std::vector<uint16_t> indices;
-
-	float arcAngle = glm::radians(90.f);
-	// Calculate the angle increment based on the arc angle
-	float angleIncrement = arcAngle / (numSegments - 1);
-	for (int i = 0; i < numSegments; i++)
-	{
-		float angle = static_cast<float>(angleIncrement * i);
-		glm::vec2 point(left + width + radius * glm::cos(angle), bottom + height + radius * glm::sin(angle));
-		vertices.push_back({ point, glm::vec3{0.0f, 1.0f, 0.0f} });
-	}
-	vertices.push_back({ {left + width, bottom + height}, glm::vec3{0.0f, 0.0f, 1.0f} });
-	
-	
-	for (int i = 0; i < numSegments - 1; ++i) {
-		indices.push_back(i);
-		indices.push_back(i + 1);
-		//indices.push_back(numSegments);
-	}
-	// Connect the last segment to the first
-	indices.push_back(numSegments - 1);
-	//indices.push_back(numSegments);
-	//indices.push_back(numSegments);
-	//indices.push_back(0);
-
-
-	arcAngle = glm::radians(90.f);
-	// Calculate the angle increment based on the arc angle
-	angleIncrement = arcAngle / (numSegments - 1);
-	for (int i = 0; i < numSegments; i++)
-	{
-		float angle = static_cast<float>(angleIncrement * i + glm::radians(90.f)); // Starting at 90 degrees
-		glm::vec2 point(left + width + radius * glm::cos(angle), bottom + height + radius * glm::sin(angle));
-		vertices.push_back({ point, glm::vec3{0.0f, 1.0f, 0.0f} });
-	}
-	vertices.push_back({ {left + width,  bottom + height}, glm::vec3{0.0f, 0.0f, 1.0f} });
-
-	int currentSize = indices.size();
-
-	for (int i = 0; i < numSegments - 1; ++i) {
-		indices.push_back(i + currentSize);
-		indices.push_back(i + 1 + currentSize);
-		//indices.push_back(numSegments);
-	}
-	// Connect the last segment to the first
-	indices.push_back(numSegments - 1 + currentSize);
-	indices.push_back(numSegments + currentSize);
-	indices.push_back(numSegments + currentSize);
-	indices.push_back(currentSize);
-
-
-std::vector<Vertex2D> vertices;
-std::vector<uint16_t> indices;
-
-float arcAngle = glm::radians(90.f);
-// Calculate the angle increment based on the arc angle
-float angleIncrement = arcAngle / (numSegments - 1);
-
-for (int i = 0; i < numSegments; i++)
-{
-	float angle = static_cast<float>(angleIncrement * i);
-	glm::vec2 point(left + width + radius * glm::cos(angle), bottom + height + radius * glm::sin(angle));
-	vertices.push_back({ point, glm::vec3{0.0f, 1.0f, 0.0f} });
-}
-
-// Rotate vertices for other corners
-for (int corner = 1; corner < 4; ++corner) {
-	for (int i = 0; i < numSegments; i++) {
-		float angle = static_cast<float>(angleIncrement * i + (corner * glm::radians(90.f)));
-		glm::vec2 point(left + width + radius * glm::cos(angle), bottom + height + radius * glm::sin(angle));
-		vertices.push_back({ point, glm::vec3{0.0f, 1.0f, 0.0f} });
-	}
-}
-
-// Generate indices for all corners
-for (int corner = 0; corner < 4; ++corner) {
-	int startIndex = corner * numSegments;
-	for (int i = 0; i < numSegments - 1; ++i) {
-		indices.push_back(startIndex + i);
-		indices.push_back(startIndex + i + 1);
-	}
-	indices.push_back(startIndex + numSegments - 1);
-}
-	*/
 
 	VerInd verInd = VerInd{ finalVertexes,indices };
     return verInd;

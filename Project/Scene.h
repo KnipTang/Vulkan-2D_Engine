@@ -11,6 +11,8 @@ public:
 
 	void DrawScene(VkCommandBuffer commandBuffer, const std::vector<uint16_t> indices);
 
+	static VerInd generateLine(float left, float bottom, float width, float height, glm::vec3 color = { 1,1,1 });
+
 	static VerInd generateRectangle(float left, float bottom, float width, float height, glm::vec3 color = {1,1,1});
 
 	static VerInd generateOval(float x, float y, float radius, int numSegments, glm::vec3 color = { 1,1,1 });

@@ -30,7 +30,7 @@ void Mesh2D::destory()
 void Mesh2D::createVertexBuffer(const std::vector<Vertex2D>& vertices, Buffer& buffer, const VkQueue& graphicsQueue, const VkCommandPool& commandPool)
 {
 	m_VertexCount = static_cast<uint32_t>(vertices.size());
-	assert(m_VertexCount >= 3 && "Vertex2D count must be at least 3");
+	//assert(m_VertexCount >= 3 && "Vertex2D count must be at least 3");
 	VkDeviceSize bufferSize = sizeof(vertices[0]) * m_VertexCount;
 
 	VkBuffer stagingBuffer;

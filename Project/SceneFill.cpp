@@ -1,7 +1,7 @@
 #include "SceneFill.h"
 
 #include <glm/vec2.hpp>
-
+#include "iostream"
 #include "vulkanbase/VulkanBase.h"
 #include "Vertex.h"
 void SceneFill::DrawScene(VkCommandBuffer commandBuffer, const std::vector<uint16_t> indices)
@@ -49,28 +49,33 @@ VerInd SceneFill::generateOval(float x, float y, float radius, int numSegments, 
 
 VerInd SceneFill::generateRoundedRectangle(float left, float bottom, float width, float height, float radius, int numSegments, glm::vec3 color) {
 
-	glm::vec2 pos = { left , bottom };
-
+	glm::vec2 pos = { left, bottom };
 	const float radians = PI / 2 / numSegments;
 
-	std::vector<Vertex2D> finalVertexes;
+	std::vector<Vertex2D> finalVertices;
+	std::vector<uint16_t> indices;
 
-	// Upper Rect
-	Vertex2D vertices[4]{ {glm::vec2{pos.x + radius, pos.y + height}, color},
-						{glm::vec2{pos.x + width - radius, pos.y + height}, color},
-						{glm::vec2{pos.x + width - radius, pos.y + height + radius}, color},
-						{glm::vec2{pos.x + radius, pos.y + height + radius}, color} };
+	glm::vec2 bottomLeft = { pos.x, pos.y };
+	glm::vec2 bottomRight = { pos.x + width, pos.y };
+	glm::vec2 topRight = { pos.x + width, pos.y + height };
+	glm::vec2 topLeft = { pos.x, pos.y + height };
 
-	finalVertexes.push_back({ vertices[0].pos, vertices[0].color });
-	finalVertexes.push_back({ vertices[1].pos, vertices[1].color });
-	finalVertexes.push_back({ vertices[2].pos, vertices[2].color });
-	finalVertexes.push_back({ vertices[3].pos, vertices[3].color });
+	finalVertices.push_back({ bottomLeft, color });
+	finalVertices.push_back({ bottomRight, color });
+	finalVertices.push_back({ topRight, color });
+	finalVertices.push_back({ topLeft, color });
 
-	std::vector<uint16_t> indices =
-	{
-		0, 1, 2, 2, 3, 0
-	};
+	auto addTriangle = [&](uint16_t a, uint16_t b, uint16_t c) {
+		indices.push_back(a);
+		indices.push_back(b);
+		indices.push_back(c);
+		};
 
+	// Central rectangle
+	addTriangle(0, 1, 2);
+	addTriangle(2, 3, 0);
+
+	/*
 	// rounded parts
 	Vertex2D startPoint{ {vertices[2].pos.x,vertices[2].pos.y + radius },vertices[2].color };
 	Vertex2D endPoint{};
@@ -110,13 +115,13 @@ VerInd SceneFill::generateRoundedRectangle(float left, float bottom, float width
 		glm::vec2 point(startPoint.pos.x + radius * glm::cos(angle), startPoint.pos.y + radius * glm::sin(angle));
 		finalVertexes.push_back({ point, color }); //5,6,7
 	}
-	//indices.push_back(static_cast<uint16_t>(size - 2));
-	//indices.push_back(static_cast<uint16_t>(size));
-	for (int i = 0; i <= numSegments ; i++)
+	indices.push_back(static_cast<uint16_t>(size - 2));
+	indices.push_back(static_cast<uint16_t>(size));
+	for (int i = 0; i <= numSegments - 1; i++)
 	{
 		indices.push_back(static_cast<uint16_t>(i + size));
 		indices.push_back(static_cast<uint16_t>((i + size - 3) % (numSegments + size + 1) + 4)); // cyclically connect vertices
-		indices.push_back(static_cast<uint16_t>(numSegments + 1 + size)); // index of the center vertex	
+		indices.push_back(static_cast<uint16_t>(numSegments + 1 + size)); // index of the center vertex
 	}
 
 	startPoint.pos = { vertices[2].pos.x - radius,vertices[2].pos.y };
@@ -129,14 +134,14 @@ VerInd SceneFill::generateRoundedRectangle(float left, float bottom, float width
 		glm::vec2 point(startPoint.pos.x + radius * glm::cos(angle), startPoint.pos.y + radius * glm::sin(angle));
 		finalVertexes.push_back({ point, color });
 	}
-	//indices.push_back(static_cast<uint16_t>(size - 2));
-	//indices.push_back(static_cast<uint16_t>(size));
-	//for (int i = 0; i <= numSegments - 1; i++)
-	//{
-	//	indices.push_back(static_cast<uint16_t>(i + size)); // index starts from the last vertex of the previous loop
-	//	indices.push_back(static_cast<uint16_t>((i + size - 3) % (numSegments + size + 1) + 4)); // cyclically connect vertices
-	//	indices.push_back(static_cast<uint16_t>(numSegments + 1 + size)); // index of the center vertex
-	//}
+	indices.push_back(static_cast<uint16_t>(size - 2));
+	indices.push_back(static_cast<uint16_t>(size));
+	for (int i = 0; i <= numSegments - 1; i++)
+	{
+		indices.push_back(static_cast<uint16_t>(i + size)); // index starts from the last vertex of the previous loop
+		indices.push_back(static_cast<uint16_t>((i + size - 3) % (numSegments + size + 1) + 4)); // cyclically connect vertices
+		//indices.push_back(static_cast<uint16_t>(numSegments + 1 + size)); // index of the center vertex
+	}
 
 	startPoint.pos = { vertices[2].pos.x,vertices[2].pos.y };
 	finalVertexes.push_back({ startPoint.pos, color });
@@ -147,19 +152,27 @@ VerInd SceneFill::generateRoundedRectangle(float left, float bottom, float width
 		glm::vec2 point(startPoint.pos.x + radius * glm::cos(angle), startPoint.pos.y + radius * glm::sin(angle));
 		finalVertexes.push_back({ point, color });
 	}
-	//indices.push_back(static_cast<uint16_t>(size - 2));
-	//indices.push_back(static_cast<uint16_t>(size));
-	//for (int i = 0; i <= numSegments - 1; i++)
-	//{
-	//	indices.push_back(static_cast<uint16_t>(i + size)); // index starts from the last vertex of the previous loop
-	//	indices.push_back(static_cast<uint16_t>((i + size - 3) % (numSegments + size + 1) + 4)); // cyclically connect vertices
-	//	indices.push_back(static_cast<uint16_t>(numSegments + 1 + size)); // index of the center vertex
-	//}
-	//
-	//indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 1));
-	//indices.push_back(static_cast<uint16_t>(1));
+	indices.push_back(static_cast<uint16_t>(size - 2));
+	indices.push_back(static_cast<uint16_t>(size));
+	for (int i = 0; i <= numSegments - 1; i++)
+	{
+		indices.push_back(static_cast<uint16_t>(i + size)); // index starts from the last vertex of the previous loop
+		indices.push_back(static_cast<uint16_t>((i + size - 3) % (numSegments + size + 1) + 4)); // cyclically connect vertices
+		//indices.push_back(static_cast<uint16_t>(numSegments + 1 + size)); // index of the center vertex
+	}
 
-	VerInd verInd = VerInd{ finalVertexes,indices };
+	indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 1));
+	indices.push_back(static_cast<uint16_t>(1));
+	*/
+
+	std::cout << "Vertices: \n";
+	for (size_t i = 0; i < finalVertices.size(); i++)
+	{
+		std::cout << i << ": " << " x: " << finalVertices.at(i).pos.x << " y: " << finalVertices.at(i).pos.y << '\n';
+	}
+
+
+	VerInd verInd = VerInd{ finalVertices,indices };
 	return verInd;
 }
 

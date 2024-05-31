@@ -88,6 +88,7 @@ private:
 		//m_Shader3D.initialize(device);
 		m_Shader2DFill.initialize(device);
 		m_Shader2D.initialize(device);
+		m_Shader2DGrid.initialize(device);
 		// week 02
 		m_CommandPool.initialize(device, m_Device.findQueueFamilies(physicalDevice, surface));
 		m_Buffer.initialize(device, physicalDevice, m_CommandPool.getVkCommandPool(), graphicsQueue);
@@ -125,7 +126,10 @@ private:
 		m_Mesh2D4.createIndexBuffer(m_RectVerInd.indices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
 		m_Mesh2D5.createVertexBuffer(m_ArcVerInd.vertices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
 		m_Mesh2D5.createIndexBuffer(m_ArcVerInd.indices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
-
+		m_Mesh2DLineVer.createVertexBuffer(m_LineVerticalVerInd.vertices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
+		m_Mesh2DLineVer.createIndexBuffer(m_LineVerticalVerInd.indices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
+		m_Mesh2DLineHor.createVertexBuffer(m_LineHorizontalVerInd.vertices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
+		m_Mesh2DLineHor.createIndexBuffer(m_LineHorizontalVerInd.indices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
 
 		m_Buffer.createUniformBuffers();
 		//VulkanContext& m_Context = VulkanContext{ device, physicalDevice, m_RenderPass.getVkRenderPass(), m_SwapChain.getVkSwapChainExtent() };
@@ -134,24 +138,32 @@ private:
 		//m_GraphicsPipeline3D.addMesh(m_Mesh3D);
 		//m_GraphicsPipeline3D.addMesh(m_Mesh3D2);
 		
+		m_GraphicsPipelineGrid.initialize(device);
+		m_GraphicsPipelineGrid.createGraphicsPipeline(m_RenderPass.getVkRenderPass(), m_Shader2DGrid, &m_LineWidth);
+		m_GraphicsPipelineGrid.addMesh(m_Mesh2DLineVer);
+		m_GraphicsPipelineGrid.addMesh(m_Mesh2DLineHor);
+
 		m_GraphicsPipelineFill.initialize(device);
 		m_GraphicsPipelineFill.createGraphicsPipeline(m_RenderPass.getVkRenderPass(), m_Shader2DFill);
-		m_GraphicsPipelineFill.addMesh(m_Mesh2DFill);
+		//m_GraphicsPipelineFill.addMesh(m_Mesh2DFill);
 		m_GraphicsPipelineFill.addMesh(m_Mesh2D2Fill);
-		m_GraphicsPipelineFill.addMesh(m_Mesh2D3Fill);
-		m_GraphicsPipelineFill.addMesh(m_Mesh2D4Fill);
-		m_GraphicsPipelineFill.addMesh(m_Mesh2D5Fill);
-
+		//m_GraphicsPipelineFill.addMesh(m_Mesh2D3Fill);
+		//m_GraphicsPipelineFill.addMesh(m_Mesh2D4Fill);
+		//m_GraphicsPipelineFill.addMesh(m_Mesh2D5Fill);
 		m_GraphicsPipelineTemp.initialize(device);
 		m_GraphicsPipelineTemp.createGraphicsPipeline(m_RenderPass.getVkRenderPass(), m_Shader2D, &m_LineWidth);
-		m_GraphicsPipelineTemp.addMesh(m_Mesh2D);
+		//m_GraphicsPipelineTemp.addMesh(m_Mesh2D);
 		m_GraphicsPipelineTemp.addMesh(m_Mesh2D2);
-		m_GraphicsPipelineTemp.addMesh(m_Mesh2D3);
-		m_GraphicsPipelineTemp.addMesh(m_Mesh2D4);
-		m_GraphicsPipelineTemp.addMesh(m_Mesh2D5);
+
+
+		//m_GraphicsPipelineTemp.addMesh(m_Mesh2D3);
+		//m_GraphicsPipelineTemp.addMesh(m_Mesh2D4);
+		//m_GraphicsPipelineTemp.addMesh(m_Mesh2D5);
 
 
 		m_CommandBuffer = m_CommandPool.createCommandBuffer();
+
+		msaaSamples = getMaxUsableSampleCount();
 
 		// week 06
 		createSyncObjects();
@@ -177,6 +189,8 @@ private:
 		m_Mesh2D3.destory();
 		m_Mesh2D4.destory();
 		m_Mesh2D5.destory();
+		m_Mesh2DLineVer.destory();
+		m_Mesh2DLineHor.destory();
 
 		m_Buffer.destroy();
 
@@ -192,6 +206,7 @@ private:
 		//m_GraphicsPipeline3D.destroy();
 		m_GraphicsPipelineTemp.destroy();
 		m_GraphicsPipelineFill.destroy();
+		m_GraphicsPipelineGrid.destroy();
 
 		m_RenderPass.destroy();
 		//m_RenderPass2D.destroy();
@@ -254,6 +269,11 @@ private:
 	//	"shaders/shader.frag.spv" 
 	//};
 
+	DAEShader2D m_Shader2DGrid{
+	"shaders/shader2D.vert.spv",
+	"shaders/shader2D.frag.spv"
+	};
+
 	DAEShader2D m_Shader2D{
 		"shaders/shader2D.vert.spv",
 		"shaders/shader2D.frag.spv"
@@ -291,14 +311,17 @@ private:
 	//RenderPass2D m_RenderPass2D{};
 	GraphicsPipelineTemp m_GraphicsPipelineTemp{};
 	GraphicsPipelineFill m_GraphicsPipelineFill{};
+	GraphicsPipelineTemp m_GraphicsPipelineGrid{};
 
 	void createFrameBuffers();
 
+	const VerInd m_LineVerticalVerInd = Scene::generateLine(0.f, 1.f, 0.0f, -1.f, { 0,0,1 });
+	const VerInd m_LineHorizontalVerInd = Scene::generateLine(1.f, 0.f, -1.0f, 0.f, { 0,0,1 });
 	const VerInd m_RectVerInd = Scene::generateRectangle(-0.9f, -0.9f, 0.5f,0.5f);
 	const VerInd m_OvalVerInd = Scene::generateOval(0.70f, 0.70f, 0.25f, 16);
 	const VerInd m_ArcVerInd = Scene::generateArc(0.70f, -0.70f, 0.25f, 16, 300.f);
 	const VerInd m_TorusVerInd = Scene::generateDonut(0.70f, 0.f, 0.25f, 0.15f, 16);
-	const VerInd m_RoundedRectVerInd = Scene::generateRoundedRectangle(-0.3f, 0.0f, 0.1f, 0.1f, 0.25f, 15, {1,0,0});
+	const VerInd m_RoundedRectVerInd = Scene::generateRoundedRectangle(-0.3f, -0.8f, 1.f, 0.5f, .4f, 2);
 
 	const VerInd m_RectFillVerInd = SceneFill::generateRectangle(-0.9f, -0.9f, 0.5f, 0.5f, { 1,0,0 });
 	const VerInd m_OvalFillVerInd = SceneFill::generateOval(0.70f, 0.70f, 0.25f, 16, { 1,0,0 });
@@ -316,6 +339,9 @@ private:
 	Mesh2D m_Mesh2D3{ device, graphicsQueue, m_CommandPool.getVkCommandPool() };
 	Mesh2D m_Mesh2D4{ device, graphicsQueue, m_CommandPool.getVkCommandPool() };
 	Mesh2D m_Mesh2D5{ device, graphicsQueue, m_CommandPool.getVkCommandPool() };
+	Mesh2D m_Mesh2DLineVer{ device, graphicsQueue, m_CommandPool.getVkCommandPool() };
+	Mesh2D m_Mesh2DLineHor{ device, graphicsQueue, m_CommandPool.getVkCommandPool() };
+
 
 	Mesh2D m_Mesh2DFill{ device, graphicsQueue, m_CommandPool.getVkCommandPool() };
 	Mesh2D m_Mesh2D2Fill{ device, graphicsQueue, m_CommandPool.getVkCommandPool() };
@@ -351,6 +377,30 @@ private:
 	VkSemaphore renderFinishedSemaphore;
 	VkFence inFlightFence;
 
+	VkSampleCountFlagBits msaaSamples;
+	VkSampleCountFlagBits getMaxUsableSampleCount() {
+		VkPhysicalDeviceProperties physicalDeviceProperties;
+		vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);
+
+		VkSampleCountFlags counts = physicalDeviceProperties.limits.framebufferColorSampleCounts & physicalDeviceProperties.limits.framebufferDepthSampleCounts;
+		if (counts & VK_SAMPLE_COUNT_64_BIT) { return VK_SAMPLE_COUNT_64_BIT; }
+		if (counts & VK_SAMPLE_COUNT_32_BIT) { return VK_SAMPLE_COUNT_32_BIT; }
+		if (counts & VK_SAMPLE_COUNT_16_BIT) { return VK_SAMPLE_COUNT_16_BIT; }
+		if (counts & VK_SAMPLE_COUNT_8_BIT) { return VK_SAMPLE_COUNT_8_BIT; }
+		if (counts & VK_SAMPLE_COUNT_4_BIT) { return VK_SAMPLE_COUNT_4_BIT; }
+		if (counts & VK_SAMPLE_COUNT_2_BIT) { return VK_SAMPLE_COUNT_2_BIT; }
+
+		return VK_SAMPLE_COUNT_1_BIT;
+	}
+	//void createColorResources() {
+	//	VkFormat colorFormat = m_SwapChain.getVkSwapChainImageFormat();
+	//
+	//	m_Texture.createImage(m_SwapChain.getVkSwapChainExtent().width, m_SwapChain.getVkSwapChainExtent().height, msaaSamples, 1, colorFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, colorImage, colorImageMemory);
+	//	colorImageView = createImageView(colorImage, colorFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
+	//}
+	VkImage colorImage;
+	VkDeviceMemory colorImageMemory;
+	VkImageView colorImageView;
 
 	//Camera
 	Camera m_Camera;
