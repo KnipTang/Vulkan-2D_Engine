@@ -18,7 +18,7 @@ public:
 		return m_GraphicsPipeline;
 	}
 
-	void draw(const VkCommandBuffer& commandBuffer, VkExtent2D swapChainExtent, float lineWidth);
+	void draw(const VkCommandBuffer& commandBuffer, VkExtent2D swapChainExtent, float lineWidth, glm::vec3 newColors);
 
 	void addMesh(Mesh2D& mesh) { m_Mesh.emplace_back(&mesh); }
 

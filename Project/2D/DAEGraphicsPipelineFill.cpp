@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <vector>
 
-void GraphicsPipelineFill::draw(const VkCommandBuffer& commandBuffer, VkExtent2D swapChainExtent)
+void GraphicsPipelineFill::draw(const VkCommandBuffer& commandBuffer, VkExtent2D swapChainExtent, glm::vec3 newColors)
 {
 	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline);
 
@@ -20,6 +20,8 @@ void GraphicsPipelineFill::draw(const VkCommandBuffer& commandBuffer, VkExtent2D
 	scissor.offset = { 0, 0 };
 	scissor.extent = swapChainExtent;
 	vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+
+	vkCmdPushConstants(commandBuffer, m_PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(newColors), &newColors);
 
 	for (Mesh2D* mesh : m_Mesh)
 	{
@@ -78,10 +80,16 @@ void GraphicsPipelineFill::createGraphicsPipeline(const VkRenderPass& renderPass
 	dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
 	dynamicState.pDynamicStates = dynamicStates.data();
 
+	VkPushConstantRange pushConstantRange{};
+	pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+	pushConstantRange.offset = 0;
+	pushConstantRange.size = sizeof(glm::vec3); // Assuming 3 colors
+
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 	pipelineLayoutInfo.setLayoutCount = 0;
-	pipelineLayoutInfo.pushConstantRangeCount = 0;
+	pipelineLayoutInfo.pushConstantRangeCount = 1;
+	pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 
 	if (vkCreatePipelineLayout(m_VkDevice, &pipelineLayoutInfo, nullptr, &m_PipelineLayout) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create pipeline layout!");

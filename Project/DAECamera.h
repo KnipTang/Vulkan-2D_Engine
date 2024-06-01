@@ -106,7 +106,6 @@ struct Camera
 	{
 		if (key == GLFW_KEY_W && (action == GLFW_REPEAT || action == GLFW_PRESS))
 		{
-			std::cout << "W";
 			m_Origin -= m_Forward * m_SpeedMovement * deltaTime;
 		}
 		if (key == GLFW_KEY_S && (action == GLFW_REPEAT || action == GLFW_PRESS))
@@ -115,15 +114,12 @@ struct Camera
 		}
 		if (key == GLFW_KEY_A && (action == GLFW_REPEAT || action == GLFW_PRESS))
 		{
-			std::cout << "A";
 			m_Origin += m_Right * m_SpeedMovement * deltaTime;
 		}
 		if (key == GLFW_KEY_D && (action == GLFW_REPEAT || action == GLFW_PRESS))
 		{
 			m_Origin -= m_Right * m_SpeedMovement * deltaTime;
 		}
-
-		std::cout << m_Origin.z << '\n';
 
 		UpdateCamera();
 

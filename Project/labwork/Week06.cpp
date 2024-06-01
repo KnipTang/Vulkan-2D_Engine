@@ -73,10 +73,10 @@ void VulkanBase::drawFrame() {
 	//m_GraphicsPipeline2D.DrawFrame(m_CommandBuffer.getVkCommandBuffer(), m_SwapChain.getVkSwapChainExtent());
 
 	if(m_ToggleGrid)
-		m_GraphicsPipelineGrid.draw(m_CommandBuffer.getVkCommandBuffer(), m_SwapChain.getVkSwapChainExtent(), m_LineWidthGrid);
+		m_GraphicsPipelineGrid.draw(m_CommandBuffer.getVkCommandBuffer(), m_SwapChain.getVkSwapChainExtent(), m_LineWidthGrid, m_ColorGrid);
 
-	m_GraphicsPipelineFill.draw(m_CommandBuffer.getVkCommandBuffer(), m_SwapChain.getVkSwapChainExtent());
-	m_GraphicsPipelineTemp.draw(m_CommandBuffer.getVkCommandBuffer(), m_SwapChain.getVkSwapChainExtent(), m_LineWidth);
+	m_GraphicsPipelineFill.draw(m_CommandBuffer.getVkCommandBuffer(), m_SwapChain.getVkSwapChainExtent(), m_ColorFill);
+	m_GraphicsPipelineTemp.draw(m_CommandBuffer.getVkCommandBuffer(), m_SwapChain.getVkSwapChainExtent(), m_LineWidth, m_ColorLine);
 
 	ViewProjection vp3D{};
 	

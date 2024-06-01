@@ -45,6 +45,141 @@ void VulkanBase::keyEvent(int key, int scancode, int action, int mods)
 	{
 		m_ToggleGrid = !m_ToggleGrid;
 	}
+	if ((key == GLFW_KEY_1 || key == GLFW_KEY_2 || key == GLFW_KEY_3) && (action == GLFW_REPEAT || action == GLFW_PRESS))
+	{
+		bool shiftPressed = glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS;
+
+		if (key == GLFW_KEY_1)
+		{
+			if (shiftPressed)
+			{
+				m_ColorLine.r -= 0.1f;
+			}
+			else
+			{
+				m_ColorLine.r += 0.1f;
+			}
+		}
+		if (key == GLFW_KEY_2)
+		{
+			if (shiftPressed)
+			{
+				m_ColorLine.g -= 0.1f;
+			}
+			else
+			{
+				m_ColorLine.g += 0.1f;
+			}
+		}
+		if (key == GLFW_KEY_3)
+		{
+			if (shiftPressed)
+			{
+				m_ColorLine.b -= 0.1f;
+			}
+			else
+			{
+				m_ColorLine.b += 0.1f;
+			}
+		}
+
+		// Clamp the values to the range [0.0, 1.0] to prevent overflow
+		m_ColorLine.r = glm::clamp(m_ColorLine.r, 0.0f, 1.0f);
+		m_ColorLine.g = glm::clamp(m_ColorLine.g, 0.0f, 1.0f);
+		m_ColorLine.b = glm::clamp(m_ColorLine.b, 0.0f, 1.0f);
+
+		std::cout << "Color Line: " << " { " << m_ColorLine.r << ", " << m_ColorLine.g << ", " << m_ColorLine.b << " }" << '\n';
+	}
+	if ((key == GLFW_KEY_4 || key == GLFW_KEY_5 || key == GLFW_KEY_6) && (action == GLFW_REPEAT || action == GLFW_PRESS))
+	{
+		bool shiftPressed = glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS;
+
+		if (key == GLFW_KEY_4)
+		{
+			if (shiftPressed)
+			{
+				m_ColorFill.r -= 0.1f;
+			}
+			else
+			{
+				m_ColorFill.r += 0.1f;
+			}
+		}
+		if (key == GLFW_KEY_5)
+		{
+			if (shiftPressed)
+			{
+				m_ColorFill.g -= 0.1f;
+			}
+			else
+			{
+				m_ColorFill.g += 0.1f;
+			}
+		}
+		if (key == GLFW_KEY_6)
+		{
+			if (shiftPressed)
+			{
+				m_ColorFill.b -= 0.1f;
+			}
+			else
+			{
+				m_ColorFill.b += 0.1f;
+			}
+		}
+
+		// Clamp the values to the range [0.0, 1.0] to prevent overflow
+		m_ColorFill.r = glm::clamp(m_ColorFill.r, 0.0f, 1.0f);
+		m_ColorFill.g = glm::clamp(m_ColorFill.g, 0.0f, 1.0f);
+		m_ColorFill.b = glm::clamp(m_ColorFill.b, 0.0f, 1.0f);
+
+		std::cout << "Color Fill: " << " { " << m_ColorFill.r << ", " << m_ColorFill.g << ", " << m_ColorFill.b << " }" << '\n';
+	}
+	if ((key == GLFW_KEY_7 || key == GLFW_KEY_8 || key == GLFW_KEY_9) && (action == GLFW_REPEAT || action == GLFW_PRESS))
+	{
+		bool shiftPressed = glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS;
+
+		if (key == GLFW_KEY_7)
+		{
+			if (shiftPressed)
+			{
+				m_ColorGrid.r -= 0.1f;
+			}
+			else
+			{
+				m_ColorGrid.r += 0.1f;
+			}
+		}
+		if (key == GLFW_KEY_8)
+		{
+			if (shiftPressed)
+			{
+				m_ColorGrid.g -= 0.1f;
+			}
+			else
+			{
+				m_ColorGrid.g += 0.1f;
+			}
+		}
+		if (key == GLFW_KEY_9)
+		{
+			if (shiftPressed)
+			{
+				m_ColorGrid.b -= 0.1f;
+			}
+			else
+			{
+				m_ColorGrid.b += 0.1f;
+			}
+		}
+
+		// Clamp the values to the range [0.0, 1.0] to prevent overflow
+		m_ColorGrid.r = glm::clamp(m_ColorGrid.r, 0.0f, 1.0f);
+		m_ColorGrid.g = glm::clamp(m_ColorGrid.g, 0.0f, 1.0f);
+		m_ColorGrid.b = glm::clamp(m_ColorGrid.b, 0.0f, 1.0f);
+
+		std::cout << "Color Grid: " << " { " << m_ColorGrid.r << ", " << m_ColorGrid.g << ", " << m_ColorGrid.b << " }" << '\n';
+	}
 	else
 	{
 		

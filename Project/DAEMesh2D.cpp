@@ -71,3 +71,4 @@ void Mesh2D::createIndexBuffer(const std::vector<uint16_t>& indices, Buffer& buf
 	vkDestroyBuffer(m_Device, stagingBuffer, nullptr);
 	vkFreeMemory(m_Device, stagingBufferMemory, nullptr);
 }
+

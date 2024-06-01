@@ -438,9 +438,14 @@ private:
 	float elapseTime;
 
 	float m_LineWidth = 5.f;
+	glm::vec3 m_ColorLine = { 0,1,0 };
+
+	glm::vec3 m_ColorFill = { 1,0,0 };
 
 	bool m_ToggleGrid = true;
 	float m_LineWidthGrid = 1.f;
+	glm::vec3 m_ColorGrid = { 0,0,1 };
+
 
 	void keyEvent(int key, int scancode, int action, int mods);
 	void mouseMove(GLFWwindow* window, double xpos, double ypos);
