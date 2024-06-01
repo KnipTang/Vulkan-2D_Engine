@@ -394,7 +394,7 @@ private:
 
 	void createFrameBuffers();
 
-	float gridDepth = .95f;
+	float gridDepth = .99f;
 	const VerInd m_LineVerticalVerInd = Scene::generateLine(0.f, 1.f, 0.0f, -1.f, gridDepth);
 	const VerInd m_LineHorizontalVerInd = Scene::generateLine(1.f, 0.f, -1.0f, 0.f, gridDepth);
 	const VerInd m_LineVerticalLeftVerInd = Scene::generateLine(-0.5f, 1.f, -0.5f, -1.f, gridDepth);
@@ -402,13 +402,14 @@ private:
 	const VerInd m_LineVerticalRightVerInd = Scene::generateLine(0.5f, 1.f, 0.5f, -1.f, gridDepth);
 	const VerInd m_LineHorizontalBottomVerInd = Scene::generateLine(1.f, 0.5f, -1.0f, 0.5f, gridDepth);
 
-	const VerInd m_RectVerInd = Scene::generateRectangle(-0.9f, -0.9f, 0.5f,0.5f);
-	const VerInd m_OvalVerInd = Scene::generateOval(0.70f, 0.70f, 0.25f, 16);
-	const VerInd m_ArcVerInd = Scene::generateArc(0.70f, -0.70f, 0.25f, 16, 300.f);
-	const VerInd m_TorusVerInd = Scene::generateDonut(0.70f, 0.f, 0.25f, 0.15f, 16);
-	const VerInd m_RoundedRectVerInd = Scene::generateRoundedRectangle(-.5f, .5f, .2f, .15f, 50);
+	float lineDepth = 0.1f;
+	const VerInd m_RectVerInd = Scene::generateRectangle(-0.9f, -0.9f, 0.5f,0.5f, lineDepth);
+	const VerInd m_OvalVerInd = Scene::generateOval(0.70f, 0.70f, 0.25f, 16, lineDepth);
+	const VerInd m_ArcVerInd = Scene::generateArc(0.70f, -0.70f, 0.25f, 16, 300.f, lineDepth);
+	const VerInd m_TorusVerInd = Scene::generateDonut(0.70f, 0.f, 0.25f, 0.15f, 16, lineDepth);
+	const VerInd m_RoundedRectVerInd = Scene::generateRoundedRectangle(-.5f, .5f, .2f, .15f, 50, lineDepth);
 
-	float fillDepth = 0.9f;
+	float fillDepth = 0.2f;
 	const VerInd m_RectFillVerInd = SceneFill::generateRectangle(-0.9f, -0.9f, 0.5f, 0.5f, fillDepth);
 	const VerInd m_OvalFillVerInd = SceneFill::generateOval(0.70f, 0.70f, 0.25f, 16, fillDepth);
 	const VerInd m_ArcFillVerInd = SceneFill::generateArc(0.70f, -0.70f, 0.25f, 16, 300.f, fillDepth);
@@ -518,7 +519,7 @@ private:
 
 	float m_LineWidthMouse = 1.f;
 	glm::vec3 m_ColorMouse = { 1,1,1 };
-	float m_MouseDepth = 1.f;
+	float m_MouseDepth = .0f;
 
 	void keyEvent(int key, int scancode, int action, int mods);
 	void mouseMove(GLFWwindow* window, double xpos, double ypos);
