@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <vector>
 
-void GraphicsPipelineTemp::draw(const VkCommandBuffer& commandBuffer, VkExtent2D swapChainExtent, float lineWidth, glm::vec3 newColors)
+void GraphicsPipelineLine::draw(const VkCommandBuffer& commandBuffer, VkExtent2D swapChainExtent, float lineWidth, glm::vec3 newColors)
 {
 	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline);
 
@@ -31,12 +31,12 @@ void GraphicsPipelineTemp::draw(const VkCommandBuffer& commandBuffer, VkExtent2D
 	}
 }
 
-void GraphicsPipelineTemp::initialize(const VkDevice& device)
+void GraphicsPipelineLine::initialize(const VkDevice& device)
 {
 	m_VkDevice = device;
 }
 
-void GraphicsPipelineTemp::createGraphicsPipeline(const VkRenderPass& renderPass, DAEShader2D& shader, float *lineWidth)
+void GraphicsPipelineLine::createGraphicsPipeline(const VkRenderPass& renderPass, DAEShader2D& shader, float *lineWidth)
 {
 	VkPipelineViewportStateCreateInfo viewportState{};
 	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -135,7 +135,7 @@ void GraphicsPipelineTemp::createGraphicsPipeline(const VkRenderPass& renderPass
 	shader.DestroyShaderModules(m_VkDevice);
 }
 
-void GraphicsPipelineTemp::destroy()
+void GraphicsPipelineLine::destroy()
 {
 	vkDestroyPipeline(m_VkDevice, m_GraphicsPipeline, nullptr);
 	vkDestroyPipelineLayout(m_VkDevice, m_PipelineLayout, nullptr);

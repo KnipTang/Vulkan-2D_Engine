@@ -6,11 +6,11 @@
 
 class DAEShader2D;
 
-class GraphicsPipelineTemp
+class GraphicsPipelineLine
 {
 public:
-	GraphicsPipelineTemp() {}
-	~GraphicsPipelineTemp() = default;
+	GraphicsPipelineLine() {}
+	~GraphicsPipelineLine() = default;
 
 	void createGraphicsPipeline(const VkRenderPass& renderPass, DAEShader2D& shader, float *lineWidth);
 

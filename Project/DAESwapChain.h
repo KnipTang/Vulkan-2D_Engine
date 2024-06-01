@@ -40,7 +40,7 @@ public:
 	}
 
 	void initialize();
-	void destroy();
+	//void destroy();
 private:
 
 	VkSwapchainKHR swapChain;

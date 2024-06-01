@@ -41,6 +41,7 @@
 #include <2D/DAEGraphicsPipelineFill.h>
 #include "SceneFill.h"
 #include "MouseDrawing.h"
+#include "DAESwapChain.h"
 
 const std::vector<const char*> validationLayers = {
 	"VK_LAYER_KHRONOS_validation"
@@ -177,13 +178,13 @@ private:
 		m_GraphicsPipelineFill.addMesh(m_Mesh2D4Fill);
 		m_GraphicsPipelineFill.addMesh(m_Mesh2D5Fill);
 
-		m_GraphicsPipelineTemp.initialize(device);
-		m_GraphicsPipelineTemp.createGraphicsPipeline(m_RenderPass.getVkRenderPass(), m_Shader2D, &m_LineWidth);
-		m_GraphicsPipelineTemp.addMesh(m_Mesh2D);
-		m_GraphicsPipelineTemp.addMesh(m_Mesh2D2);
-		m_GraphicsPipelineTemp.addMesh(m_Mesh2D3);
-		m_GraphicsPipelineTemp.addMesh(m_Mesh2D4);
-		m_GraphicsPipelineTemp.addMesh(m_Mesh2D5);
+		m_GraphicsPipelineLine.initialize(device);
+		m_GraphicsPipelineLine.createGraphicsPipeline(m_RenderPass.getVkRenderPass(), m_Shader2D, &m_LineWidth);
+		m_GraphicsPipelineLine.addMesh(m_Mesh2D);
+		m_GraphicsPipelineLine.addMesh(m_Mesh2D2);
+		m_GraphicsPipelineLine.addMesh(m_Mesh2D3);
+		m_GraphicsPipelineLine.addMesh(m_Mesh2D4);
+		m_GraphicsPipelineLine.addMesh(m_Mesh2D5);
 
 
 		m_CommandBuffer = m_CommandPool.createCommandBuffer();
@@ -209,18 +210,26 @@ private:
 
 		//m_Mesh3D.destory();
 		//m_Mesh3D2.destory();
-		m_Mesh2D.destory();
-		m_Mesh2D2.destory();
-		m_Mesh2D3.destory();
-		m_Mesh2D4.destory();
-		m_Mesh2D5.destory();
-		m_Mesh2DLineMouse.destory();
 		m_Mesh2DLineVer.destory();
 		m_Mesh2DLineHor.destory();
 		m_Mesh2DLineVerLeft.destory();
 		m_Mesh2DLineHorTop.destory();
 		m_Mesh2DLineVerRight.destory();
 		m_Mesh2DLineHorBottom.destory();
+
+		m_Mesh2D.destory();
+		m_Mesh2D2.destory();
+		m_Mesh2D3.destory();
+		m_Mesh2D4.destory();
+		m_Mesh2D5.destory();
+
+		m_Mesh2DLineMouse.destory();
+
+		m_Mesh2DFill.destory();
+		m_Mesh2D2Fill.destory();
+		m_Mesh2D3Fill.destory();
+		m_Mesh2D4Fill.destory();
+		m_Mesh2D5Fill.destory();
 
 		m_Buffer.destroy();
 
@@ -234,14 +243,16 @@ private:
 		}
 
 		//m_GraphicsPipeline3D.destroy();
-		m_GraphicsPipelineTemp.destroy();
+		m_GraphicsPipelineLine.destroy();
 		m_GraphicsPipelineFill.destroy();
 		m_GraphicsPipelineGrid.destroy();
+		m_GraphicsPipelineMouse.destroy();
 
 		m_RenderPass.destroy();
 		//m_RenderPass2D.destroy();
 
 		m_CommandPool.destroy();
+		
 		
 
 		for (auto imageView : m_SwapChain.getVkSwapChainImageViews()) {
@@ -387,10 +398,10 @@ private:
 	//GraphicsPipeline3D m_GraphicsPipeline3D{};
 	RenderPass m_RenderPass{};
 	//RenderPass2D m_RenderPass2D{};
-	GraphicsPipelineTemp m_GraphicsPipelineTemp{};
+	GraphicsPipelineLine m_GraphicsPipelineLine{};
 	GraphicsPipelineFill m_GraphicsPipelineFill{};
-	GraphicsPipelineTemp m_GraphicsPipelineGrid{};
-	GraphicsPipelineTemp m_GraphicsPipelineMouse{};
+	GraphicsPipelineLine m_GraphicsPipelineGrid{};
+	GraphicsPipelineLine m_GraphicsPipelineMouse{};
 
 	void createFrameBuffers();
 
