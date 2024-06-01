@@ -17,7 +17,7 @@ public:
 
 	static VerInd generateOval(float x, float y, float radius, int numSegments, glm::vec3 color = { 1,1,1 });
 
-	static VerInd generateRoundedRectangle(float left, float bottom, float width, float height, float radius, int numSegments, glm::vec3 color = { 1,1,1 });
+	static VerInd generateRoundedRectangle(float posX, float posY, float width, float height, int numSegments, glm::vec3 color = { 1,1,1 });
 
 	static VerInd generateArc(float x, float y, float radius, int numSegments, float arcAngleInDegrees, glm::vec3 color = { 1,1,1 });
 

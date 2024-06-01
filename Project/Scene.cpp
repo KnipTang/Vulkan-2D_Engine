@@ -85,19 +85,18 @@ VerInd Scene::generateOval(float x, float y, float radius, int numSegments, glm:
 	return VerInd{ vertices, indices };
 }
 
-VerInd Scene::generateRoundedRectangle(float left, float bottom, float width, float height, float radius, int numSegments, glm::vec3 color) {
+VerInd Scene::generateRoundedRectangle(float posX, float posY, float width, float height, int numSegments, glm::vec3 color) 
+{
+	glm::vec2 pos = { posX , posY };
 
-	glm::vec2 pos = { left , bottom };
-
-	const float radians = PI / 2 / numSegments;
+	float radians = PI / 2 / numSegments;
+	//width /= 2;
+	//height /= 2;
 
 	std::vector<Vertex2D> finalVertexes;
 
 	// Upper Rect
-	Vertex2D vertices[4]{ {glm::vec2{pos.x + radius, pos.y + height}, color},
-						{glm::vec2{pos.x + width - radius, pos.y + height}, color},
-						{glm::vec2{pos.x + width - radius, pos.y + height + radius}, color},
-						{glm::vec2{pos.x + radius, pos.y + height + radius}, color} };
+	Vertex2D vertices = { glm::vec2{pos.x + width/2, pos.y - height/2}, color };
 
 	//finalVertexes.push_back({ vertices[0].pos, vertices[0].color });
 	//finalVertexes.push_back({ vertices[1].pos, vertices[1].color });
@@ -109,43 +108,47 @@ VerInd Scene::generateRoundedRectangle(float left, float bottom, float width, fl
 	   //0, 1, 2, 2, 3, 0
 	};
 
-	// rounded parts
-	Vertex2D startPoint{ {vertices[2].pos.x,vertices[2].pos.y + radius },vertices[2].color };
+	Vertex2D startPoint{ {pos.x, pos.y },vertices.color };
 	Vertex2D endPoint{};
+
+
+	finalVertexes.push_back({ startPoint.pos, color });
+
+
+
+	//1
+	startPoint.pos = { vertices.pos.x ,vertices.pos.y + height };
 
 	startPoint.color = glm::vec3{ 1.0f, 0.f, 0.f };
 	endPoint.color = glm::vec3{ 1.0f, 0.f, 0.f };
 
-
 	finalVertexes.push_back({ startPoint.pos, color }); //0
-
 	size_t size = finalVertexes.size(); 
 
 	for (int i = 0; i <= numSegments; i++)
 	{
 		float angle = radians * i;
-		glm::vec2 point(startPoint.pos.x + radius * glm::cos(angle), startPoint.pos.y + radius * glm::sin(angle));
+		glm::vec2 point(startPoint.pos.x + width * glm::cos(angle), startPoint.pos.y + height * glm::sin(angle));
 		finalVertexes.push_back({ point, color }); //4
 	}
 	for (int i = 0; i <= numSegments - 1; i++)
 	{
 		indices.push_back(static_cast<uint16_t>(i + size));
 		indices.push_back(static_cast<uint16_t>(i + size) + 1);
-		//indices.push_back(numSegments + 1 + 4);
+		//indices.push_back(static_cast<uint16_t>(0));
 	}
 
-	startPoint.color = glm::vec3{ 1.0f, 0.f, 0.f };
-	endPoint.color = glm::vec3{ 1.0f, 0.f, 0.f };
 
+	//2
+	startPoint.pos = { vertices.pos.x - width,vertices.pos.y + height };
 
-	startPoint.pos = { vertices[2].pos.x - radius,vertices[2].pos.y + radius };
 	finalVertexes.push_back({ startPoint.pos, color }); // 4
 	size = finalVertexes.size();
 
 	for (int i = 0; i <= numSegments; i++)
 	{
 		float angle = PI / 2 + radians * i;
-		glm::vec2 point(startPoint.pos.x + radius * glm::cos(angle), startPoint.pos.y + radius * glm::sin(angle));
+		glm::vec2 point(startPoint.pos.x + width * glm::cos(angle), startPoint.pos.y + height * glm::sin(angle));
 		finalVertexes.push_back({ point, color }); //5,6,7
 	}
 	indices.push_back(static_cast<uint16_t>(size-2));
@@ -154,17 +157,20 @@ VerInd Scene::generateRoundedRectangle(float left, float bottom, float width, fl
 	{
 		indices.push_back(static_cast<uint16_t>(i + size));
 		indices.push_back(static_cast<uint16_t>((i + size - 3) % (numSegments + size + 1) + 4)); // cyclically connect vertices
-		//indices.push_back(static_cast<uint16_t>(numSegments + 1 + size)); // index of the center vertex
+		//indices.push_back(static_cast<uint16_t>(0)); // index of the center vertex
 	}
 
-	startPoint.pos = { vertices[2].pos.x - radius,vertices[2].pos.y };
+
+	//3
+	startPoint.pos = { vertices.pos.x - width,vertices.pos.y };
+
 	finalVertexes.push_back({ startPoint.pos, color });
 	size = finalVertexes.size();
 
 	for (int i = 0; i <= numSegments; i++)
 	{
 		float angle = PI + radians * i;
-		glm::vec2 point(startPoint.pos.x + radius * glm::cos(angle), startPoint.pos.y + radius * glm::sin(angle));
+		glm::vec2 point(startPoint.pos.x + width * glm::cos(angle), startPoint.pos.y + height * glm::sin(angle));
 		finalVertexes.push_back({ point, color });
 	}
 	indices.push_back(static_cast<uint16_t>(size - 2));
@@ -173,16 +179,20 @@ VerInd Scene::generateRoundedRectangle(float left, float bottom, float width, fl
 	{
 		indices.push_back(static_cast<uint16_t>(i + size)); // index starts from the last vertex of the previous loop
 		indices.push_back(static_cast<uint16_t>((i + size - 3) % (numSegments + size + 1) + 4)); // cyclically connect vertices
-		//indices.push_back(static_cast<uint16_t>(numSegments + 1 + size)); // index of the center vertex
+		//indices.push_back(static_cast<uint16_t>(0)); // index of the center vertex
 	}
 
-	startPoint.pos = { vertices[2].pos.x,vertices[2].pos.y };
+
+	//4
+	startPoint.pos = { vertices.pos.x,vertices.pos.y };
+
 	finalVertexes.push_back({ startPoint.pos, color });
 	size = finalVertexes.size();
+
 	for (int i = 0; i <= numSegments; i++)
 	{
 		float angle = 3 * PI / 2 + radians * i;
-		glm::vec2 point(startPoint.pos.x + radius * glm::cos(angle), startPoint.pos.y + radius * glm::sin(angle));
+		glm::vec2 point(startPoint.pos.x + width * glm::cos(angle), startPoint.pos.y + height * glm::sin(angle));
 		finalVertexes.push_back({ point, color });
 	}
 	indices.push_back(static_cast<uint16_t>(size - 2));
@@ -191,11 +201,15 @@ VerInd Scene::generateRoundedRectangle(float left, float bottom, float width, fl
 	{
 		indices.push_back(static_cast<uint16_t>(i + size)); // index starts from the last vertex of the previous loop
 		indices.push_back(static_cast<uint16_t>((i + size - 3) % (numSegments + size + 1) + 4)); // cyclically connect vertices
-		//indices.push_back(static_cast<uint16_t>(numSegments + 1 + size)); // index of the center vertex
+		//indices.push_back(static_cast<uint16_t>(0)); // index of the center vertex
 	}
 
+
+
 	indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 1));
-	indices.push_back(static_cast<uint16_t>(1));
+	indices.push_back(static_cast<uint16_t>(2));
+
+
 
 	VerInd verInd = VerInd{ finalVertexes,indices };
     return verInd;

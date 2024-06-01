@@ -47,132 +47,105 @@ VerInd SceneFill::generateOval(float x, float y, float radius, int numSegments, 
 	return VerInd{ vertices, indices };
 }
 
-VerInd SceneFill::generateRoundedRectangle(float left, float bottom, float width, float height, float radius, int numSegments, glm::vec3 color) {
+VerInd SceneFill::generateRoundedRectangle(float posX, float posY, float width, float height, int numSegments, glm::vec3 color)
+{
+	glm::vec2 pos = { posX , posY };
 
-	glm::vec2 pos = { left, bottom };
-	const float radians = PI / 2 / numSegments;
+	float radians = PI / 2 / numSegments;
 
-	std::vector<Vertex2D> finalVertices;
-	std::vector<uint16_t> indices;
+	std::vector<Vertex2D> finalVertexes;
 
-	glm::vec2 bottomLeft = { pos.x, pos.y };
-	glm::vec2 bottomRight = { pos.x + width, pos.y };
-	glm::vec2 topRight = { pos.x + width, pos.y + height };
-	glm::vec2 topLeft = { pos.x, pos.y + height };
+	// Upper Rect
+	Vertex2D vertices = { glm::vec2{pos.x + width / 2, pos.y - height / 2}, color };
 
-	finalVertices.push_back({ bottomLeft, color });
-	finalVertices.push_back({ bottomRight, color });
-	finalVertices.push_back({ topRight, color });
-	finalVertices.push_back({ topLeft, color });
 
-	auto addTriangle = [&](uint16_t a, uint16_t b, uint16_t c) {
-		indices.push_back(a);
-		indices.push_back(b);
-		indices.push_back(c);
-		};
+	std::vector<uint16_t> indices = { };
 
-	// Central rectangle
-	addTriangle(0, 1, 2);
-	addTriangle(2, 3, 0);
-
-	/*
-	// rounded parts
-	Vertex2D startPoint{ {vertices[2].pos.x,vertices[2].pos.y + radius },vertices[2].color };
+	Vertex2D startPoint{ {pos.x, pos.y },vertices.color };
 	Vertex2D endPoint{};
+
+
+	finalVertexes.push_back({ startPoint.pos, color });
+
+	//1
+	startPoint.pos = { vertices.pos.x ,vertices.pos.y + height };
 
 	startPoint.color = glm::vec3{ 1.0f, 0.f, 0.f };
 	endPoint.color = glm::vec3{ 1.0f, 0.f, 0.f };
-
-
-	finalVertexes.push_back({ startPoint.pos, color }); //0
 
 	size_t size = finalVertexes.size();
 
 	for (int i = 0; i <= numSegments; i++)
 	{
 		float angle = radians * i;
-		glm::vec2 point(startPoint.pos.x + radius * glm::cos(angle), startPoint.pos.y + radius * glm::sin(angle));
-		finalVertexes.push_back({ point, color }); //4
-	}
-	for (int i = 0; i <= numSegments - 1; i++)
-	{
-		indices.push_back(static_cast<uint16_t>(i + size));
-		indices.push_back(static_cast<uint16_t>(i + size) + 1);
-		indices.push_back(numSegments + 1 + 4);
+		glm::vec2 point(startPoint.pos.x + width * glm::cos(angle), startPoint.pos.y + height * glm::sin(angle));
+		finalVertexes.push_back({ point, color });
 	}
 
-	startPoint.color = glm::vec3{ 1.0f, 0.f, 0.f };
-	endPoint.color = glm::vec3{ 1.0f, 0.f, 0.f };
+	//2
+	startPoint.pos = { vertices.pos.x - width,  vertices.pos.y + height };
 
-
-	startPoint.pos = { vertices[2].pos.x - radius,vertices[2].pos.y + radius };
-	finalVertexes.push_back({ startPoint.pos, color }); // 4
 	size = finalVertexes.size();
+	finalVertexes.push_back({ {startPoint.pos.x, finalVertexes.at(size - 1).pos.y}, color});
 
 	for (int i = 0; i <= numSegments; i++)
 	{
 		float angle = PI / 2 + radians * i;
-		glm::vec2 point(startPoint.pos.x + radius * glm::cos(angle), startPoint.pos.y + radius * glm::sin(angle));
-		finalVertexes.push_back({ point, color }); //5,6,7
-	}
-	indices.push_back(static_cast<uint16_t>(size - 2));
-	indices.push_back(static_cast<uint16_t>(size));
-	for (int i = 0; i <= numSegments - 1; i++)
-	{
-		indices.push_back(static_cast<uint16_t>(i + size));
-		indices.push_back(static_cast<uint16_t>((i + size - 3) % (numSegments + size + 1) + 4)); // cyclically connect vertices
-		indices.push_back(static_cast<uint16_t>(numSegments + 1 + size)); // index of the center vertex
+		glm::vec2 point(startPoint.pos.x + width * glm::cos(angle), startPoint.pos.y + height * glm::sin(angle));
+		finalVertexes.push_back({ point, color });
 	}
 
-	startPoint.pos = { vertices[2].pos.x - radius,vertices[2].pos.y };
-	finalVertexes.push_back({ startPoint.pos, color });
+	//3
+	startPoint.pos = { vertices.pos.x - width,vertices.pos.y };
+
 	size = finalVertexes.size();
+	finalVertexes.push_back({ {finalVertexes.at(size - 1).pos.x, startPoint.pos.y}, color });
 
 	for (int i = 0; i <= numSegments; i++)
 	{
 		float angle = PI + radians * i;
-		glm::vec2 point(startPoint.pos.x + radius * glm::cos(angle), startPoint.pos.y + radius * glm::sin(angle));
+		glm::vec2 point(startPoint.pos.x + width * glm::cos(angle), startPoint.pos.y + height * glm::sin(angle));
 		finalVertexes.push_back({ point, color });
 	}
-	indices.push_back(static_cast<uint16_t>(size - 2));
-	indices.push_back(static_cast<uint16_t>(size));
-	for (int i = 0; i <= numSegments - 1; i++)
-	{
-		indices.push_back(static_cast<uint16_t>(i + size)); // index starts from the last vertex of the previous loop
-		indices.push_back(static_cast<uint16_t>((i + size - 3) % (numSegments + size + 1) + 4)); // cyclically connect vertices
-		//indices.push_back(static_cast<uint16_t>(numSegments + 1 + size)); // index of the center vertex
-	}
 
-	startPoint.pos = { vertices[2].pos.x,vertices[2].pos.y };
-	finalVertexes.push_back({ startPoint.pos, color });
+	//4
+	startPoint.pos = { vertices.pos.x,vertices.pos.y };
+
 	size = finalVertexes.size();
+	finalVertexes.push_back({ {startPoint.pos.x, finalVertexes.at(size - 1).pos.y}, color });
+
 	for (int i = 0; i <= numSegments; i++)
 	{
 		float angle = 3 * PI / 2 + radians * i;
-		glm::vec2 point(startPoint.pos.x + radius * glm::cos(angle), startPoint.pos.y + radius * glm::sin(angle));
+		glm::vec2 point(startPoint.pos.x + width * glm::cos(angle), startPoint.pos.y + height * glm::sin(angle));
 		finalVertexes.push_back({ point, color });
 	}
-	indices.push_back(static_cast<uint16_t>(size - 2));
-	indices.push_back(static_cast<uint16_t>(size));
-	for (int i = 0; i <= numSegments - 1; i++)
+
+
+
+	for (int i = 0; i <= (numSegments * 4 + 4) + 1; i++)
 	{
-		indices.push_back(static_cast<uint16_t>(i + size)); // index starts from the last vertex of the previous loop
-		indices.push_back(static_cast<uint16_t>((i + size - 3) % (numSegments + size + 1) + 4)); // cyclically connect vertices
-		//indices.push_back(static_cast<uint16_t>(numSegments + 1 + size)); // index of the center vertex
+		indices.push_back(static_cast<uint16_t>(i + 1));
+		indices.push_back(static_cast<uint16_t>(i + 2));
+		indices.push_back(static_cast<uint16_t>(0));
 	}
 
-	indices.push_back(static_cast<uint16_t>(finalVertexes.size() - 1));
+	indices.push_back(static_cast<uint16_t>(indices.at(indices.size() - 2)));
 	indices.push_back(static_cast<uint16_t>(1));
+	indices.push_back(static_cast<uint16_t>(0));
+
+	/*
+	int total = 0;
+	for (size_t i = 0; i < indices.size(); i += 1)
+	{
+		total++;
+		std::cout << i << " indices: " << indices.at(i) << '\n';
+	}
+	std::cout << "Total: " << total << '\n';
 	*/
 
-	std::cout << "Vertices: \n";
-	for (size_t i = 0; i < finalVertices.size(); i++)
-	{
-		std::cout << i << ": " << " x: " << finalVertices.at(i).pos.x << " y: " << finalVertices.at(i).pos.y << '\n';
-	}
 
-
-	VerInd verInd = VerInd{ finalVertices,indices };
+	VerInd verInd = VerInd{ finalVertexes,indices };
 	return verInd;
 }
 

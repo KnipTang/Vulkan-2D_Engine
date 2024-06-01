@@ -72,7 +72,9 @@ void VulkanBase::drawFrame() {
 	//m_GraphicsPipeline2D.setUBO(vp2D, 0);
 	//m_GraphicsPipeline2D.DrawFrame(m_CommandBuffer.getVkCommandBuffer(), m_SwapChain.getVkSwapChainExtent());
 
-	m_GraphicsPipelineGrid.draw(m_CommandBuffer.getVkCommandBuffer(), m_SwapChain.getVkSwapChainExtent(), m_LineWidth);
+	if(m_ToggleGrid)
+		m_GraphicsPipelineGrid.draw(m_CommandBuffer.getVkCommandBuffer(), m_SwapChain.getVkSwapChainExtent(), m_LineWidthGrid);
+
 	m_GraphicsPipelineFill.draw(m_CommandBuffer.getVkCommandBuffer(), m_SwapChain.getVkSwapChainExtent());
 	m_GraphicsPipelineTemp.draw(m_CommandBuffer.getVkCommandBuffer(), m_SwapChain.getVkSwapChainExtent(), m_LineWidth);
 

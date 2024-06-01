@@ -27,13 +27,23 @@ void VulkanBase::keyEvent(int key, int scancode, int action, int mods)
 {
 	if (key == GLFW_KEY_P && (action == GLFW_REPEAT || action == GLFW_PRESS))
 	{
-		std::cout << "W";
 		m_LineWidth+=0.1f;
 	}
 	if (key == GLFW_KEY_O && (action == GLFW_REPEAT || action == GLFW_PRESS))
 	{
-		std::cout << "z";
 		m_LineWidth -= 0.1f;
+	}
+	if (key == GLFW_KEY_L && (action == GLFW_REPEAT || action == GLFW_PRESS))
+	{
+		m_LineWidthGrid += 0.1f;
+	}
+	if (key == GLFW_KEY_K && (action == GLFW_REPEAT || action == GLFW_PRESS))
+	{
+		m_LineWidthGrid -= 0.1f;
+	}
+	if (key == GLFW_KEY_G && (action == GLFW_REPEAT || action == GLFW_PRESS))
+	{
+		m_ToggleGrid = !m_ToggleGrid;
 	}
 	else
 	{
