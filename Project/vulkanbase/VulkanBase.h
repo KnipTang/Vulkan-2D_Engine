@@ -57,6 +57,9 @@ public:
 		initWindow();
 		//for initialising objects
 		initVulkan();
+
+		DisplayControls();
+
 		//main rendering loop
 		mainLoop();
 		//sort of a destructor for the objects created in initVulkan
@@ -168,20 +171,19 @@ private:
 
 		m_GraphicsPipelineFill.initialize(device);
 		m_GraphicsPipelineFill.createGraphicsPipeline(m_RenderPass.getVkRenderPass(), m_Shader2DFill);
-		//m_GraphicsPipelineFill.addMesh(m_Mesh2DFill);
+		m_GraphicsPipelineFill.addMesh(m_Mesh2DFill);
 		m_GraphicsPipelineFill.addMesh(m_Mesh2D2Fill);
-		//m_GraphicsPipelineFill.addMesh(m_Mesh2D3Fill);
-		//m_GraphicsPipelineFill.addMesh(m_Mesh2D4Fill);
-		//m_GraphicsPipelineFill.addMesh(m_Mesh2D5Fill);
+		m_GraphicsPipelineFill.addMesh(m_Mesh2D3Fill);
+		m_GraphicsPipelineFill.addMesh(m_Mesh2D4Fill);
+		m_GraphicsPipelineFill.addMesh(m_Mesh2D5Fill);
+
 		m_GraphicsPipelineTemp.initialize(device);
 		m_GraphicsPipelineTemp.createGraphicsPipeline(m_RenderPass.getVkRenderPass(), m_Shader2D, &m_LineWidth);
-		//m_GraphicsPipelineTemp.addMesh(m_Mesh2D);
+		m_GraphicsPipelineTemp.addMesh(m_Mesh2D);
 		m_GraphicsPipelineTemp.addMesh(m_Mesh2D2);
-
-
-		//m_GraphicsPipelineTemp.addMesh(m_Mesh2D3);
-		//m_GraphicsPipelineTemp.addMesh(m_Mesh2D4);
-		//m_GraphicsPipelineTemp.addMesh(m_Mesh2D5);
+		m_GraphicsPipelineTemp.addMesh(m_Mesh2D3);
+		m_GraphicsPipelineTemp.addMesh(m_Mesh2D4);
+		m_GraphicsPipelineTemp.addMesh(m_Mesh2D5);
 
 
 		m_CommandBuffer = m_CommandPool.createCommandBuffer();
@@ -286,6 +288,49 @@ private:
 		throw std::runtime_error("failed to find suitable memory type!");
 	}
 
+	void DisplayControls()
+	{
+#ifdef _WIN32
+		std::system("cls");
+#else
+		std::system("clear");
+#endif
+
+		std::cout << "Controls:\n";
+		std::cout << "1 - Increase Red Component\n";
+		std::cout << "Shift + 1 - Decrease Red Component\n";
+		std::cout << "2 - Increase Green Component\n";
+		std::cout << "Shift + 2 - Decrease Green Component\n";
+		std::cout << "3 - Increase Blue Component\n";
+		std::cout << "Shift + 3 - Decrease Blue Component\n";
+		std::cout << "4 - Increase Fill Red Component\n";
+		std::cout << "Shift + 4 - Decrease Fill Red Component\n";
+		std::cout << "5 - Increase Fill Green Component\n";
+		std::cout << "Shift + 5 - Decrease Fill Green Component\n";
+		std::cout << "6 - Increase Fill Blue Component\n";
+		std::cout << "Shift + 6 - Decrease Fill Blue Component\n";
+		std::cout << "7 - Increase Grid Red Component\n";
+		std::cout << "Shift + 7 - Decrease Grid Red Component\n";
+		std::cout << "8 - Increase Grid Green Component\n";
+		std::cout << "Shift + 8 - Decrease Grid Green Component\n";
+		std::cout << "9 - Increase Grid Blue Component\n";
+		std::cout << "Shift + 9 - Decrease Grid Blue Component\n";
+		std::cout << "Q - Increase Mouse Red Component\n";
+		std::cout << "Shift + Q - Decrease Mouse Red Component\n";
+		std::cout << "W - Increase Mouse Green Component\n";
+		std::cout << "Shift + W - Decrease Mouse Green Component\n";
+		std::cout << "E - Increase Mouse Blue Component\n";
+		std::cout << "Shift + E - Decrease Mouse Blue Component\n";
+		std::cout << "P - Increase Line Width\n";
+		std::cout << "O - Decrease Line Width\n";
+		std::cout << "L - Increase Grid Line Width\n";
+		std::cout << "K - Decrease Grid Line Width\n";
+		std::cout << "G - Toggle Grid\n";
+		std::cout << "S - Increase Mouse Line Width\n";
+		std::cout << "A - Decrease Mouse Line Width\n";
+		std::cout << "Press ESC to quit\n";
+	}
+
 	// Week 01: 
 	// Actual window
 	// simple fragment + vertex shader creation functions
@@ -349,26 +394,26 @@ private:
 
 	void createFrameBuffers();
 
-	const VerInd m_LineVerticalVerInd = Scene::generateLine(0.f, 1.f, 0.0f, -1.f, { 0,0,.5f });
-	const VerInd m_LineHorizontalVerInd = Scene::generateLine(1.f, 0.f, -1.0f, 0.f, { 0,0,.5f });
-	const VerInd m_LineVerticalLeftVerInd = Scene::generateLine(-0.5f, 1.f, -0.5f, -1.f, { 0,0,.5f });
-	const VerInd m_LineHorizontalTopVerInd = Scene::generateLine(1.f, -0.5f, -1.0f, -0.5f, { 0,0,.5f });
-	const VerInd m_LineVerticalRightVerInd = Scene::generateLine(0.5f, 1.f, 0.5f, -1.f, { 0,0,.5f });
-	const VerInd m_LineHorizontalBottomVerInd = Scene::generateLine(1.f, 0.5f, -1.0f, 0.5f, { 0,0,.5f });
+	float gridDepth = .95f;
+	const VerInd m_LineVerticalVerInd = Scene::generateLine(0.f, 1.f, 0.0f, -1.f, gridDepth);
+	const VerInd m_LineHorizontalVerInd = Scene::generateLine(1.f, 0.f, -1.0f, 0.f, gridDepth);
+	const VerInd m_LineVerticalLeftVerInd = Scene::generateLine(-0.5f, 1.f, -0.5f, -1.f, gridDepth);
+	const VerInd m_LineHorizontalTopVerInd = Scene::generateLine(1.f, -0.5f, -1.0f, -0.5f, gridDepth);
+	const VerInd m_LineVerticalRightVerInd = Scene::generateLine(0.5f, 1.f, 0.5f, -1.f, gridDepth);
+	const VerInd m_LineHorizontalBottomVerInd = Scene::generateLine(1.f, 0.5f, -1.0f, 0.5f, gridDepth);
 
 	const VerInd m_RectVerInd = Scene::generateRectangle(-0.9f, -0.9f, 0.5f,0.5f);
 	const VerInd m_OvalVerInd = Scene::generateOval(0.70f, 0.70f, 0.25f, 16);
 	const VerInd m_ArcVerInd = Scene::generateArc(0.70f, -0.70f, 0.25f, 16, 300.f);
 	const VerInd m_TorusVerInd = Scene::generateDonut(0.70f, 0.f, 0.25f, 0.15f, 16);
-	const VerInd m_RoundedRectVerInd = Scene::generateRoundedRectangle(-.5f, -.4f, .1f, .3f, 50);
+	const VerInd m_RoundedRectVerInd = Scene::generateRoundedRectangle(-.5f, .5f, .2f, .15f, 50);
 
-	const VerInd m_MouseLineVerInd = Scene::generateLineMouse(0.1f, 0.1f, 0.3f, 0.2f, { 0,0,.5f });
-
-	const VerInd m_RectFillVerInd = SceneFill::generateRectangle(-0.9f, -0.9f, 0.5f, 0.5f, { 1,0,0 });
-	const VerInd m_OvalFillVerInd = SceneFill::generateOval(0.70f, 0.70f, 0.25f, 16, { 1,0,0 });
-	const VerInd m_ArcFillVerInd = SceneFill::generateArc(0.70f, -0.70f, 0.25f, 16, 300.f, { 1,0,0 });
-	const VerInd m_TorusFillVerInd = SceneFill::generateDonut(0.70f, 0.f, 0.25f, 0.15f, 16, { 1,0,0 });
-	const VerInd m_RoundedRectFillVerInd = SceneFill::generateRoundedRectangle(-.5f, -.4f, .1f, .3f, 50, { 1,0,0 });
+	float fillDepth = 0.9f;
+	const VerInd m_RectFillVerInd = SceneFill::generateRectangle(-0.9f, -0.9f, 0.5f, 0.5f, fillDepth);
+	const VerInd m_OvalFillVerInd = SceneFill::generateOval(0.70f, 0.70f, 0.25f, 16, fillDepth);
+	const VerInd m_ArcFillVerInd = SceneFill::generateArc(0.70f, -0.70f, 0.25f, 16, 300.f, fillDepth);
+	const VerInd m_TorusFillVerInd = SceneFill::generateDonut(0.70f, 0.f, 0.25f, 0.15f, 16, fillDepth);
+	const VerInd m_RoundedRectFillVerInd = SceneFill::generateRoundedRectangle(-.5f, .5f, .2f, .15f, 50, fillDepth);
 
 	MouseDrawing m_MouseDrawing;
 
@@ -471,6 +516,9 @@ private:
 	float m_LineWidthGrid = 1.f;
 	glm::vec3 m_ColorGrid = { 0,0,1 };
 
+	float m_LineWidthMouse = 1.f;
+	glm::vec3 m_ColorMouse = { 1,1,1 };
+	float m_MouseDepth = 1.f;
 
 	void keyEvent(int key, int scancode, int action, int mods);
 	void mouseMove(GLFWwindow* window, double xpos, double ypos);

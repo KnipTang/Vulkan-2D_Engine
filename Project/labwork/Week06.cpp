@@ -78,7 +78,7 @@ void VulkanBase::drawFrame() {
 	m_GraphicsPipelineFill.draw(m_CommandBuffer.getVkCommandBuffer(), m_SwapChain.getVkSwapChainExtent(), m_ColorFill);
 	m_GraphicsPipelineTemp.draw(m_CommandBuffer.getVkCommandBuffer(), m_SwapChain.getVkSwapChainExtent(), m_LineWidth, m_ColorLine);
 
-	m_GraphicsPipelineMouse.draw(m_CommandBuffer.getVkCommandBuffer(), m_SwapChain.getVkSwapChainExtent(), m_LineWidth, m_ColorLine);
+	m_GraphicsPipelineMouse.draw(m_CommandBuffer.getVkCommandBuffer(), m_SwapChain.getVkSwapChainExtent(), m_LineWidthMouse, m_ColorMouse);
 
 	ViewProjection vp3D{};
 	

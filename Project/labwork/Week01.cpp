@@ -45,6 +45,14 @@ void VulkanBase::keyEvent(int key, int scancode, int action, int mods)
 	{
 		m_ToggleGrid = !m_ToggleGrid;
 	}
+	if (key == GLFW_KEY_S && (action == GLFW_REPEAT || action == GLFW_PRESS))
+	{
+		m_LineWidthMouse += 0.1f;
+	}
+	if (key == GLFW_KEY_A && (action == GLFW_REPEAT || action == GLFW_PRESS))
+	{
+		m_LineWidthMouse -= 0.1f;
+	}
 	if ((key == GLFW_KEY_1 || key == GLFW_KEY_2 || key == GLFW_KEY_3) && (action == GLFW_REPEAT || action == GLFW_PRESS))
 	{
 		bool shiftPressed = glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS;
@@ -180,6 +188,53 @@ void VulkanBase::keyEvent(int key, int scancode, int action, int mods)
 
 		std::cout << "Color Grid: " << " { " << m_ColorGrid.r << ", " << m_ColorGrid.g << ", " << m_ColorGrid.b << " }" << '\n';
 	}
+
+	if ((key == GLFW_KEY_Q || key == GLFW_KEY_W || key == GLFW_KEY_E) && (action == GLFW_REPEAT || action == GLFW_PRESS))
+	{
+		bool shiftPressed = glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS;
+
+		if (key == GLFW_KEY_Q)
+		{
+			if (shiftPressed)
+			{
+				m_ColorMouse.r -= 0.1f;
+			}
+			else
+			{
+				m_ColorMouse.r += 0.1f;
+			}
+		}
+		if (key == GLFW_KEY_W)
+		{
+			if (shiftPressed)
+			{
+				m_ColorMouse.g -= 0.1f;
+			}
+			else
+			{
+				m_ColorMouse.g += 0.1f;
+			}
+		}
+		if (key == GLFW_KEY_E)
+		{
+			if (shiftPressed)
+			{
+				m_ColorMouse.b -= 0.1f;
+			}
+			else
+			{
+				m_ColorMouse.b += 0.1f;
+			}
+		}
+
+		// Clamp the values to the range [0.0, 1.0] to prevent overflow
+		m_ColorMouse.r = glm::clamp(m_ColorMouse.r, 0.0f, 1.0f);
+		m_ColorMouse.g = glm::clamp(m_ColorMouse.g, 0.0f, 1.0f);
+		m_ColorMouse.b = glm::clamp(m_ColorMouse.b, 0.0f, 1.0f);
+
+		std::cout << "Color Mouse: " << " { " << m_ColorMouse.r << ", " << m_ColorMouse.g << ", " << m_ColorMouse.b << " }" << '\n';
+	}
+
 	else
 	{
 		
@@ -220,7 +275,6 @@ void VulkanBase::mouseEvent(GLFWwindow* window, int button, int action, int mods
 {
 	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
 	{
-		std::cout << "right mouse button pressed\n";
 		double xpos, ypos;
 		glfwGetCursorPos(window, &xpos, &ypos);
 		m_DragStart.x = static_cast<float>(xpos);
@@ -233,7 +287,6 @@ void VulkanBase::mouseEvent(GLFWwindow* window, int button, int action, int mods
 
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
 	{
-		std::cout << "Left mouse button pressed\n";
 		double xpos, ypos;
 		glfwGetCursorPos(window, &xpos, &ypos);
 
@@ -245,7 +298,7 @@ void VulkanBase::mouseEvent(GLFWwindow* window, int button, int action, int mods
 
 		ndcY *= -1;
 
-		m_MouseDrawing.AddMouseClick(glm::vec2{ ndcX, ndcY });
+		m_MouseDrawing.AddMouseClick(glm::vec2{ ndcX, ndcY }, m_MouseDepth);
 		m_Mesh2DLineMouse.createVertexBuffer(m_MouseDrawing.CalculateVerInd().vertices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
 		m_Mesh2DLineMouse.createIndexBuffer(m_MouseDrawing.CalculateVerInd().indices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
 	}

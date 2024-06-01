@@ -9,12 +9,12 @@ void SceneFill::DrawScene(VkCommandBuffer commandBuffer, const std::vector<uint1
 	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 }
 
-VerInd SceneFill::generateRectangle(float left, float bottom, float width, float height, glm::vec3 color) {
+VerInd SceneFill::generateRectangle(float left, float bottom, float width, float height, float depth, glm::vec3 color) {
 	std::vector<Vertex2D> vertices;
-	vertices.push_back({ {left, bottom}, color });
-	vertices.push_back({ {left + width, bottom},color });
-	vertices.push_back({ {left + width, bottom + height}, color });
-	vertices.push_back({ {left, bottom + height}, color });
+	vertices.push_back({ {left, bottom, depth}, color });
+	vertices.push_back({ {left + width, bottom, depth},color });
+	vertices.push_back({ {left + width, bottom + height, depth}, color });
+	vertices.push_back({ {left, bottom + height, depth}, color });
 
 	std::vector<uint16_t> indices;
 	indices = { 0, 1, 2, 2, 3, 0 };
@@ -22,16 +22,16 @@ VerInd SceneFill::generateRectangle(float left, float bottom, float width, float
 	return VerInd{ vertices, indices };
 }
 
-VerInd SceneFill::generateOval(float x, float y, float radius, int numSegments, glm::vec3 color) {
+VerInd SceneFill::generateOval(float x, float y, float radius, int numSegments, float depth, glm::vec3 color) {
 	std::vector<Vertex2D> vertices;
 	for (int i = 0; i < numSegments; i++)
 	{
 		float angle = static_cast<float>(2 * PI * i / numSegments);
-		glm::vec2 point(x + radius * glm::cos(angle), y + radius * glm::sin(angle));
+		glm::vec3 point(x + radius * glm::cos(angle), y + radius * glm::sin(angle), depth);
 		vertices.push_back({ point, color });
 	}
 
-	vertices.push_back({ {x, y}, color });
+	vertices.push_back({ {x, y, depth}, color });
 
 	std::vector<uint16_t> indices;
 	for (int i = 0; i < numSegments - 1; ++i) {
@@ -47,7 +47,7 @@ VerInd SceneFill::generateOval(float x, float y, float radius, int numSegments, 
 	return VerInd{ vertices, indices };
 }
 
-VerInd SceneFill::generateRoundedRectangle(float posX, float posY, float width, float height, int numSegments, glm::vec3 color)
+VerInd SceneFill::generateRoundedRectangle(float posX, float posY, float width, float height, int numSegments, float depth, glm::vec3 color)
 {
 	glm::vec2 pos = { posX , posY };
 
@@ -56,19 +56,19 @@ VerInd SceneFill::generateRoundedRectangle(float posX, float posY, float width, 
 	std::vector<Vertex2D> finalVertexes;
 
 	// Upper Rect
-	Vertex2D vertices = { glm::vec2{pos.x + width / 2, pos.y - height / 2}, color };
+	Vertex2D vertices = { glm::vec3{pos.x + width / 2, pos.y - height / 2, depth}, color };
 
 
 	std::vector<uint16_t> indices = { };
 
-	Vertex2D startPoint{ {pos.x, pos.y },vertices.color };
+	Vertex2D startPoint{ {pos.x, pos.y, depth },vertices.color };
 	Vertex2D endPoint{};
 
 
 	finalVertexes.push_back({ startPoint.pos, color });
 
 	//1
-	startPoint.pos = { vertices.pos.x ,vertices.pos.y + height };
+	startPoint.pos = { vertices.pos.x ,vertices.pos.y + height, depth };
 
 	startPoint.color = glm::vec3{ 1.0f, 0.f, 0.f };
 	endPoint.color = glm::vec3{ 1.0f, 0.f, 0.f };
@@ -78,46 +78,46 @@ VerInd SceneFill::generateRoundedRectangle(float posX, float posY, float width, 
 	for (int i = 0; i <= numSegments; i++)
 	{
 		float angle = radians * i;
-		glm::vec2 point(startPoint.pos.x + width * glm::cos(angle), startPoint.pos.y + height * glm::sin(angle));
+		glm::vec3 point(startPoint.pos.x + width * glm::cos(angle), startPoint.pos.y + height * glm::sin(angle), depth);
 		finalVertexes.push_back({ point, color });
 	}
 
 	//2
-	startPoint.pos = { vertices.pos.x - width,  vertices.pos.y + height };
+	startPoint.pos = { vertices.pos.x - width,  vertices.pos.y + height, depth };
 
 	size = finalVertexes.size();
-	finalVertexes.push_back({ {startPoint.pos.x, finalVertexes.at(size - 1).pos.y}, color});
+	finalVertexes.push_back({ {startPoint.pos.x, finalVertexes.at(size - 1).pos.y, depth}, color});
 
 	for (int i = 0; i <= numSegments; i++)
 	{
 		float angle = PI / 2 + radians * i;
-		glm::vec2 point(startPoint.pos.x + width * glm::cos(angle), startPoint.pos.y + height * glm::sin(angle));
+		glm::vec3 point(startPoint.pos.x + width * glm::cos(angle), startPoint.pos.y + height * glm::sin(angle), depth);
 		finalVertexes.push_back({ point, color });
 	}
 
 	//3
-	startPoint.pos = { vertices.pos.x - width,vertices.pos.y };
+	startPoint.pos = { vertices.pos.x - width,vertices.pos.y, depth };
 
 	size = finalVertexes.size();
-	finalVertexes.push_back({ {finalVertexes.at(size - 1).pos.x, startPoint.pos.y}, color });
+	finalVertexes.push_back({ {finalVertexes.at(size - 1).pos.x, startPoint.pos.y, depth}, color });
 
 	for (int i = 0; i <= numSegments; i++)
 	{
 		float angle = PI + radians * i;
-		glm::vec2 point(startPoint.pos.x + width * glm::cos(angle), startPoint.pos.y + height * glm::sin(angle));
+		glm::vec3 point(startPoint.pos.x + width * glm::cos(angle), startPoint.pos.y + height * glm::sin(angle), depth);
 		finalVertexes.push_back({ point, color });
 	}
 
 	//4
-	startPoint.pos = { vertices.pos.x,vertices.pos.y };
+	startPoint.pos = { vertices.pos.x,vertices.pos.y, depth };
 
 	size = finalVertexes.size();
-	finalVertexes.push_back({ {startPoint.pos.x, finalVertexes.at(size - 1).pos.y}, color });
+	finalVertexes.push_back({ {startPoint.pos.x, finalVertexes.at(size - 1).pos.y, depth}, color });
 
 	for (int i = 0; i <= numSegments; i++)
 	{
 		float angle = 3 * PI / 2 + radians * i;
-		glm::vec2 point(startPoint.pos.x + width * glm::cos(angle), startPoint.pos.y + height * glm::sin(angle));
+		glm::vec3 point(startPoint.pos.x + width * glm::cos(angle), startPoint.pos.y + height * glm::sin(angle), depth);
 		finalVertexes.push_back({ point, color });
 	}
 
@@ -149,7 +149,7 @@ VerInd SceneFill::generateRoundedRectangle(float posX, float posY, float width, 
 	return verInd;
 }
 
-VerInd SceneFill::generateArc(float x, float y, float radius, int numSegments, float arcAngleInDegrees, glm::vec3 color)
+VerInd SceneFill::generateArc(float x, float y, float radius, int numSegments, float arcAngleInDegrees, float depth, glm::vec3 color)
 {
 	std::vector<Vertex2D> vertices;
 	// Convert arc angle from degrees to radians
@@ -159,10 +159,10 @@ VerInd SceneFill::generateArc(float x, float y, float radius, int numSegments, f
 	for (int i = 0; i < numSegments; i++)
 	{
 		float angle = static_cast<float>(angleIncrement * i);
-		glm::vec2 point(x + radius * glm::cos(angle), y + radius * glm::sin(angle));
+		glm::vec3 point(x + radius * glm::cos(angle), y + radius * glm::sin(angle), depth);
 		vertices.push_back({ point, color });
 	}
-	vertices.push_back({ {x, y}, color });
+	vertices.push_back({ {x, y, depth}, color });
 
 
 	std::vector<uint16_t> indices;
@@ -181,7 +181,7 @@ VerInd SceneFill::generateArc(float x, float y, float radius, int numSegments, f
 	return VerInd{ vertices, indices };
 }
 
-VerInd SceneFill::generateSpiral(float x, float y, float majorRadius, float minorRadius, int numMajorSegments, int numMinorSegments, glm::vec3 color)
+VerInd SceneFill::generateSpiral(float x, float y, float majorRadius, float minorRadius, int numMajorSegments, int numMinorSegments, float depth, glm::vec3 color)
 {
 	std::vector<Vertex2D> vertices;
 	std::vector<uint16_t> indices;
@@ -218,7 +218,7 @@ VerInd SceneFill::generateSpiral(float x, float y, float majorRadius, float mino
 	return VerInd{ vertices, indices };
 }
 
-VerInd SceneFill::generateDonut(float x, float y, float outerRadius, float innerRadius, int numSegments, glm::vec3 color)
+VerInd SceneFill::generateDonut(float x, float y, float outerRadius, float innerRadius, int numSegments, float depth, glm::vec3 color)
 {
 	std::vector<Vertex2D> vertices;
 	std::vector<uint16_t> indices;
@@ -226,14 +226,14 @@ VerInd SceneFill::generateDonut(float x, float y, float outerRadius, float inner
 	// Generate outer circle vertices
 	for (int i = 0; i < numSegments; ++i) {
 		float angle = static_cast<float>(2 * PI * i / numSegments);
-		glm::vec2 outerPoint(x + outerRadius * glm::cos(angle), y + outerRadius * glm::sin(angle));
+		glm::vec3 outerPoint(x + outerRadius * glm::cos(angle), y + outerRadius * glm::sin(angle), depth);
 		vertices.push_back({ outerPoint, color });
 	}
 
 	// Generate inner circle vertices
 	for (int i = 0; i < numSegments; ++i) {
 		float angle = static_cast<float>(2 * PI * i / numSegments);
-		glm::vec2 innerPoint(x + innerRadius * glm::cos(angle), y + innerRadius * glm::sin(angle));
+		glm::vec3 innerPoint(x + innerRadius * glm::cos(angle), y + innerRadius * glm::sin(angle), depth);
 		vertices.push_back({ innerPoint, color });
 	}
 

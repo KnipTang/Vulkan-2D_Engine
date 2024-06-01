@@ -9,14 +9,18 @@ public:
     MouseDrawing() {};
     ~MouseDrawing() = default;
 
-    void AddMouseClick(glm::vec2 pos) 
+    void AddMouseClick(glm::vec2 pos, float mouseDepth) 
     { 
-        m_MouseClicksPos.emplace_back(pos); 
-        std::cout << "Added Mouse Pos: " << pos.x << ", " << pos.y << '\n';
+        m_MouseClicksPos.emplace_back(pos, mouseDepth);
+        std::cout << "Added Mouse Click: " << pos.x << ", " << pos.y << '\n';
 
         CalculateVerInd();
     }
-    void ClearMouseClicks() { m_MouseClicksPos.clear(); }
+    void ClearMouseClicks() 
+    { 
+        m_MouseClicksPos.clear(); 
+        std::cout << "Cleared Mouse" << '\n';
+    }
 
     VerInd CalculateVerInd()
     {
@@ -27,7 +31,7 @@ public:
         return VerInd{ m_Vertices, m_Indices };
     }
 
-    std::vector<glm::vec2> GetMouseClicks() { return m_MouseClicksPos; }
+    std::vector<glm::vec3> GetMouseClicks() { return m_MouseClicksPos; }
 
 private:
 
@@ -36,7 +40,7 @@ private:
         m_Vertices.clear();
 
         if (m_MouseClicksPos.empty()) {
-            m_Vertices.push_back(Vertex2D{ glm::vec2{-2.0f, -2.0f}, glm::vec3{1.0f, 1.0f, 1.0f} });
+            m_Vertices.push_back(Vertex2D{ glm::vec3{-2.0f, -2.0f, 0}, glm::vec3{1.0f, 1.0f, 1.0f} });
             return;
         }
 
@@ -65,7 +69,7 @@ private:
         m_Indices.emplace_back(m_Vertices.size() - 1);
     }
 
-    std::vector<glm::vec2> m_MouseClicksPos;
+    std::vector<glm::vec3> m_MouseClicksPos;
 
     std::vector<Vertex2D> m_Vertices;
     std::vector<uint16_t> m_Indices;
