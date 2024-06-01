@@ -11,7 +11,7 @@ public:
 
 	void DrawScene(VkCommandBuffer commandBuffer, const std::vector<uint16_t> indices);
 
-	static VerInd generateLine(float left, float bottom, float width, float height, glm::vec3 color = { 1,1,1 });
+	static VerInd generateLine(float posX1, float posY1, float posX2, float posY2, glm::vec3 color = { 1,1,1 });
 
 	static VerInd generateRectangle(float left, float bottom, float width, float height, glm::vec3 color = {1,1,1});
 
@@ -24,6 +24,8 @@ public:
 	static VerInd generateSpiral(float x, float y, float majorRadius, float minorRadius, int numMajorSegments, int numMinorSegments, glm::vec3 color = { 1,1,1 });
 
 	static VerInd generateDonut(float x, float y, float outerRadius, float innerRadius, int numSegments, glm::vec3 color = { 1,1,1 });
+
+	static VerInd generateLineMouse(float posX1, float posY1, float posX2, float posY2, glm::vec3 color = { 1,1,1 });
 
 private:
 };

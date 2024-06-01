@@ -40,6 +40,8 @@
 #include "DAERenderPass2D.h"
 #include <2D/DAEGraphicsPipelineFill.h>
 #include "SceneFill.h"
+#include "MouseDrawing.h"
+
 const std::vector<const char*> validationLayers = {
 	"VK_LAYER_KHRONOS_validation"
 };
@@ -86,6 +88,7 @@ private:
 		m_RenderPass.initialize(device);
 		m_RenderPass.createRenderPass(m_SwapChain.getVkSwapChainImageFormat(), m_Depth);
 		//m_Shader3D.initialize(device);
+		m_Shader2DMouse.initialize(device);
 		m_Shader2DFill.initialize(device);
 		m_Shader2D.initialize(device);
 		m_Shader2DGrid.initialize(device);
@@ -126,6 +129,10 @@ private:
 		m_Mesh2D4.createIndexBuffer(m_RectVerInd.indices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
 		m_Mesh2D5.createVertexBuffer(m_ArcVerInd.vertices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
 		m_Mesh2D5.createIndexBuffer(m_ArcVerInd.indices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
+
+		m_Mesh2DLineMouse.createVertexBuffer(m_MouseDrawing.CalculateVerInd().vertices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
+		m_Mesh2DLineMouse.createIndexBuffer(m_MouseDrawing.CalculateVerInd().indices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
+
 		m_Mesh2DLineVer.createVertexBuffer(m_LineVerticalVerInd.vertices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
 		m_Mesh2DLineVer.createIndexBuffer(m_LineVerticalVerInd.indices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
 		m_Mesh2DLineHor.createVertexBuffer(m_LineHorizontalVerInd.vertices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
@@ -146,6 +153,10 @@ private:
 		//m_GraphicsPipeline3D.addMesh(m_Mesh3D);
 		//m_GraphicsPipeline3D.addMesh(m_Mesh3D2);
 		
+		m_GraphicsPipelineMouse.initialize(device);
+		m_GraphicsPipelineMouse.createGraphicsPipeline(m_RenderPass.getVkRenderPass(), m_Shader2DMouse, &m_LineWidthGrid);
+		m_GraphicsPipelineMouse.addMesh(m_Mesh2DLineMouse);
+
 		m_GraphicsPipelineGrid.initialize(device);
 		m_GraphicsPipelineGrid.createGraphicsPipeline(m_RenderPass.getVkRenderPass(), m_Shader2DGrid, &m_LineWidthGrid);
 		m_GraphicsPipelineGrid.addMesh(m_Mesh2DLineVer);
@@ -201,6 +212,7 @@ private:
 		m_Mesh2D3.destory();
 		m_Mesh2D4.destory();
 		m_Mesh2D5.destory();
+		m_Mesh2DLineMouse.destory();
 		m_Mesh2DLineVer.destory();
 		m_Mesh2DLineHor.destory();
 		m_Mesh2DLineVerLeft.destory();
@@ -285,6 +297,11 @@ private:
 	//	"shaders/shader.frag.spv" 
 	//};
 
+	DAEShader2D m_Shader2DMouse{
+	"shaders/shader2D.vert.spv",
+	"shaders/shader2D.frag.spv"
+	};
+
 	DAEShader2D m_Shader2DGrid{
 	"shaders/shader2D.vert.spv",
 	"shaders/shader2D.frag.spv"
@@ -328,6 +345,7 @@ private:
 	GraphicsPipelineTemp m_GraphicsPipelineTemp{};
 	GraphicsPipelineFill m_GraphicsPipelineFill{};
 	GraphicsPipelineTemp m_GraphicsPipelineGrid{};
+	GraphicsPipelineTemp m_GraphicsPipelineMouse{};
 
 	void createFrameBuffers();
 
@@ -344,17 +362,22 @@ private:
 	const VerInd m_TorusVerInd = Scene::generateDonut(0.70f, 0.f, 0.25f, 0.15f, 16);
 	const VerInd m_RoundedRectVerInd = Scene::generateRoundedRectangle(-.5f, -.4f, .1f, .3f, 50);
 
+	const VerInd m_MouseLineVerInd = Scene::generateLineMouse(0.1f, 0.1f, 0.3f, 0.2f, { 0,0,.5f });
+
 	const VerInd m_RectFillVerInd = SceneFill::generateRectangle(-0.9f, -0.9f, 0.5f, 0.5f, { 1,0,0 });
 	const VerInd m_OvalFillVerInd = SceneFill::generateOval(0.70f, 0.70f, 0.25f, 16, { 1,0,0 });
 	const VerInd m_ArcFillVerInd = SceneFill::generateArc(0.70f, -0.70f, 0.25f, 16, 300.f, { 1,0,0 });
 	const VerInd m_TorusFillVerInd = SceneFill::generateDonut(0.70f, 0.f, 0.25f, 0.15f, 16, { 1,0,0 });
 	const VerInd m_RoundedRectFillVerInd = SceneFill::generateRoundedRectangle(-.5f, -.4f, .1f, .3f, 50, { 1,0,0 });
 
+	MouseDrawing m_MouseDrawing;
+
 	// Week 04
 	// Swap chain and image view support
 	//Mesh3D m_Mesh3D{ device,  graphicsQueue, m_CommandPool.getVkCommandPool(), "models/viking_room.obj"};
 	//Mesh3D m_Mesh3D2{ device,  graphicsQueue, m_CommandPool.getVkCommandPool(), "models/viking_room4.obj"};
 	//2D
+
 	Mesh2D m_Mesh2DLineVer{ device, graphicsQueue, m_CommandPool.getVkCommandPool() };
 	Mesh2D m_Mesh2DLineHor{ device, graphicsQueue, m_CommandPool.getVkCommandPool() };
 	Mesh2D m_Mesh2DLineVerLeft{ device, graphicsQueue, m_CommandPool.getVkCommandPool() };
@@ -367,6 +390,8 @@ private:
 	Mesh2D m_Mesh2D3{ device, graphicsQueue, m_CommandPool.getVkCommandPool() };
 	Mesh2D m_Mesh2D4{ device, graphicsQueue, m_CommandPool.getVkCommandPool() };
 	Mesh2D m_Mesh2D5{ device, graphicsQueue, m_CommandPool.getVkCommandPool() };
+
+	Mesh2D m_Mesh2DLineMouse{ device, graphicsQueue, m_CommandPool.getVkCommandPool() };
 
 	Mesh2D m_Mesh2DFill{ device, graphicsQueue, m_CommandPool.getVkCommandPool() };
 	Mesh2D m_Mesh2D2Fill{ device, graphicsQueue, m_CommandPool.getVkCommandPool() };

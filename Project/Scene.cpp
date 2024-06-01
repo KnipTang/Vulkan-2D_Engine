@@ -320,3 +320,26 @@ VerInd Scene::generateDonut(float x, float y, float outerRadius, float innerRadi
 
 	return VerInd{ vertices, indices };
 }
+
+VerInd Scene::generateLineMouse(float posX1, float posY1, float posX2, float posY2, glm::vec3 color)
+{
+	std::vector<Vertex2D> vertices;
+	vertices.push_back({ {posX1, posY1}, color });
+	vertices.push_back({ {posX2, posY2},color });
+	vertices.push_back({ {posX2 + 0.1f, posY2 + 0.1f},color });
+	vertices.push_back({ {posX2 + 0.2f, posY2 + 0.3f},color });
+	vertices.push_back({ {posX2 + 0.4f, posY2 + 0.4f},color });
+	vertices.push_back({ {posX2 + 0.1f, posY2 + 0.1f},color });
+
+	std::vector<uint16_t> indices;
+	indices.emplace_back(0);
+	for (size_t i = 1; i < vertices.size() - 1; i++)
+	{
+		indices.emplace_back(i);
+		indices.emplace_back(i);
+	}
+	indices.emplace_back(vertices.size() - 1);
+	//indices = { 0, 1, 1, 2, 2, 3 };
+
+	return VerInd{ vertices, indices };
+}

@@ -218,12 +218,35 @@ void VulkanBase::mouseMove(GLFWwindow* window, double xpos, double ypos)
 
 void VulkanBase::mouseEvent(GLFWwindow* window, int button, int action, int mods)
 {
-	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_REPEAT)
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
 	{
 		std::cout << "right mouse button pressed\n";
 		double xpos, ypos;
 		glfwGetCursorPos(window, &xpos, &ypos);
 		m_DragStart.x = static_cast<float>(xpos);
 		m_DragStart.y = static_cast<float>(ypos);
+
+		m_MouseDrawing.ClearMouseClicks();
+		m_Mesh2DLineMouse.createVertexBuffer(m_MouseDrawing.CalculateVerInd().vertices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
+		m_Mesh2DLineMouse.createIndexBuffer(m_MouseDrawing.CalculateVerInd().indices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
+	}
+
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+	{
+		std::cout << "Left mouse button pressed\n";
+		double xpos, ypos;
+		glfwGetCursorPos(window, &xpos, &ypos);
+
+		int width, height;
+		glfwGetWindowSize(window, &width, &height);
+
+		float ndcX = static_cast<float>(2.0 * xpos / width - 1.0);
+		float ndcY = static_cast<float>(1.0 - 2.0 * ypos / height);
+
+		ndcY *= -1;
+
+		m_MouseDrawing.AddMouseClick(glm::vec2{ ndcX, ndcY });
+		m_Mesh2DLineMouse.createVertexBuffer(m_MouseDrawing.CalculateVerInd().vertices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
+		m_Mesh2DLineMouse.createIndexBuffer(m_MouseDrawing.CalculateVerInd().indices, m_Buffer, graphicsQueue, m_CommandPool.getVkCommandPool());
 	}
 }

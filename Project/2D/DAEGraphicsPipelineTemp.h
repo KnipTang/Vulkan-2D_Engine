@@ -21,6 +21,7 @@ public:
 	void draw(const VkCommandBuffer& commandBuffer, VkExtent2D swapChainExtent, float lineWidth, glm::vec3 newColors);
 
 	void addMesh(Mesh2D& mesh) { m_Mesh.emplace_back(&mesh); }
+	void clearMeshes() { m_Mesh.clear(); }
 
 	void initialize(const VkDevice& device);
 	void destroy();
