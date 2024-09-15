@@ -21,7 +21,8 @@ All colors and the width of every line can be customized In-Real-Time using keyb
 
 A depth buffer is included allowing each element's depth to be set to create layers in your digital art pieces.
 
-Controls:
+**Controls:**
+
 ![Controls](https://github.com/KnipTang/Vulkan-2D_Engine/blob/main/Images/Controls.PNG?raw=true)
 
 # Development
